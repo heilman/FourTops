@@ -8,6 +8,6 @@ git clone http://github.com/keaveney/FourTops TopBrussels/FourTops
 
 cd TopBrussels/FourTops/
 
-git checkout master
+git checkout CMSSW_53X
 
 make
