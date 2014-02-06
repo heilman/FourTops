@@ -1,0 +1,4 @@
+{
+  .L HistFact.C+;
+  HistFact();
+}
