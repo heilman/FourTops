@@ -1,0 +1,3 @@
+import sendEmail
+
+sendMail('aragh yeah')
