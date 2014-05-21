@@ -265,9 +265,7 @@ int main (int argc, char *argv[]) {
     MSPlot["NbOfVertices"]                                  = new MultiSamplePlot(datasets, "NbOfVertices", 40, 0, 40, "Nb. of vertices");
     //Muons
     MSPlot["NbOfIsolatedMuons"]                             = new MultiSamplePlot(datasets, "NbOfIsolatedMuons", 5, 0, 5, "Nb. of isolated muons");
-    MSPlot["NbOfIsolatedElectrons"]                         = new MultiSamplePlot(datasets, "NbOfIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["NbOfExtraIsolatedMuons"]                        = new MultiSamplePlot(datasets, "NbOfExtraIsolatedMuons", 5, 0, 5, "Nb. of isolated muons");
-    MSPlot["NbOfExtraIsolatedElectrons"]                    = new MultiSamplePlot(datasets, "NbOfExtraIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["MuonRelIsolation"]                              = new MultiSamplePlot(datasets, "MuonRelIsolation", 50, 0, .25, "RelIso");
     MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 35, 0, 300, "PT_{#mu}");
     MSPlot["MuonEta"]                                       = new MultiSamplePlot(datasets, "MuonEta", 25, -2.4, 2.4, "#eta_{#mu}");
@@ -281,13 +279,26 @@ int main (int argc, char *argv[]) {
     MSPlot["MuonDz"]                                        = new MultiSamplePlot(datasets, "MuonDz", 25, -.6 ,.6, "Dz_{#mu}");
     MSPlot["MuonTrackerLayersWithMeasurement"]              = new MultiSamplePlot(datasets, "MuonTrackerLayersWithMeasurement", 25, 0, 25, "nLayers");
     MSPlot["DiMuon_InvMass"]                                = new MultiSamplePlot(datasets, "DiMuon_InvMass", 60, 0, 120, "DiMuon_InvMass");
-    MSPlot["NbOfLooseMuon"]                                 = new MultiSamplePlot(datasets, "NbOfLooseMuon", 10, 0, 10, "Nb. of loose muons");
+    MSPlot["NbOfLooseMuons"]                                 = new MultiSamplePlot(datasets, "NbOfLooseMuons", 10, 0, 10, "Nb. of loose muons");
+        //Electrons
+    MSPlot["NbOfLooseElectrons"]                            = new MultiSamplePlot(datasets, "NbOfIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
+    MSPlot["NbOfExtraIsolatedElectrons"]                    = new MultiSamplePlot(datasets, "NbOfExtraIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
+    MSPlot["ElectronRelIsolation"]                              = new MultiSamplePlot(datasets, "ElectronRelIsolation", 50, 0, .25, "RelIso");
+    MSPlot["ElectronPt"]                                        = new MultiSamplePlot(datasets, "ElectronPt", 35, 0, 300, "PT_{#mu}");
+    MSPlot["ElectronEta"]                                       = new MultiSamplePlot(datasets, "ElectronEta", 25, -2.4, 2.4, "#eta_{#mu}");
+    MSPlot["ElectronPhi"]                                       = new MultiSamplePlot(datasets, "ElectronPhi", 50, -4, 4, "#phi_{#mu}");
+    MSPlot["Electrond0"]                                        = new MultiSamplePlot(datasets, "Electrond0", 50, -0.05, 0.05, "d0_{#mu}");
+    MSPlot["ElectrondZPVz"]                                     = new MultiSamplePlot(datasets, "ElectrondZPVz", 50, 0, .5, "dZPVZ_{#mu}");
+    MSPlot["ElectrondRJets"]                                    = new MultiSamplePlot(datasets, "ElectrondRJets", 50, 0, 10, "dRJets_{#mu}");
+    MSPlot["ElectronDistVzPVz"]                                 = new MultiSamplePlot(datasets, "ElectronDistVzPVz", 50, 0 ,.3, "DistVzPVz_{#mu}");
+    MSPlot["ElectronDz"]                                        = new MultiSamplePlot(datasets, "ElectronDz", 25, -.6 ,.6, "Dz_{#mu}");
+
     //B-tagging discriminators
     MSPlot["BdiscBJetCand_CSV"]                             = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV", 75, 0, 1, "CSV b-disc.");
     //Jets
     MSPlot["NbOfSelectedJets"]                              = new MultiSamplePlot(datasets, "NbOfSelectedJets", 15, 0, 15, "Nb. of jets");
     MSPlot["NbOfSelectedLightJets"]                         = new MultiSamplePlot(datasets, "NbOfSelectedLightJets", 10, 0, 10, "Nb. of jets");
-    MSPlot["NbOfSelectedBJets"]                             = new MultiSamplePlot(datasets, "NbOfSelectedBJets", 8, 0, 8, "Nb. of tags");
+    MSPlot["NbOfSelectedMBJets"]                            = new MultiSamplePlot(datasets, "NbOfSelectedMBJets", 8, 0, 8, "Nb. of CSVM tags");
     MSPlot["JetEta"]                                        = new MultiSamplePlot(datasets, "JetEta", 30,-3, 3, "Jet #eta");
     MSPlot["JetPhi"]                                        = new MultiSamplePlot(datasets, "JetPhi", 50, -4,4 , "Jet #phi");
     MSPlot["SelectedJetPt"]                                 = new MultiSamplePlot(datasets, "SelectedJetPt", 50, 0, 300, "PT_{jet}");
@@ -331,19 +342,22 @@ int main (int argc, char *argv[]) {
     cout <<"Making directory :"<< pathPNG  <<endl;
 
     /////////////////////////////////
-    // Selection table: µ + jets
+    // Selection table: Dilepton(e/mu) + jets
     /////////////////////////////////
-    vector<string> CutsSelecTableMu;
-    CutsSelecTableMu.push_back(string("initial"));
-    CutsSelecTableMu.push_back(string("Event cleaning and Trigger"));
-    CutsSelecTableMu.push_back(string("Exactly 2 isolated muon"));
-    CutsSelecTableMu.push_back(string("Loose electron veto"));
+    vector<string> CutsselecTableMuElEl;
+    CutsselecTableMuElEl.push_back(string("initial"));
+    CutsselecTableMuElEl.push_back(string("Event cleaning and Trigger"));
+    CutsselecTableMuElEl.push_back(string("Exactly 1 Loose Muon"));
+    CutsselecTableMuElEl.push_back(string("Exactly 1 Loose Electron"));
+    CutsselecTableMuElEl.push_back(string("At least 1 CSVM Jet"));
+    CutsselecTableMuElEl.push_back(string("At least 1 extra CSVL Jet"));
+    CutsselecTableMuElEl.push_back(string("At least 2 extra CSVL Jet"));
 
-    SelectionTable selecTableMu(CutsSelecTableMu, datasets);
-    selecTableMu.SetLuminosity(Luminosity);
-    selecTableMu.SetPrecision(1);
+    SelectionTable selecTableMuEl(CutsselecTableMuElEl, datasets);
+    selecTableMuEl.SetLuminosity(Luminosity);
+    selecTableMuEl.SetPrecision(1);
 
-    SelectionTable selecTableEl(CutsSelecTableMu, datasets);
+    SelectionTable selecTableEl(CutsselecTableMuElEl, datasets);
 
     /////////////////////////////////
     // Loop on datasets
@@ -630,9 +644,9 @@ int main (int argc, char *argv[]) {
             // Define object selection cuts
             selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0);//Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
             selection.setElectronCuts();//	selection.setElectronCuts(30.,2.5,0.1,0.02,0.,999.,0,1); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
-            selection.setLooseElectronCuts(20,2.5,0.15,0.);
+            selection.setLooseElectronCuts(20,2.5,0.15,0.5);
             selection.setMuonCuts();
-            selection.setLooseMuonCuts(10,2.5,0.2);
+            selection.setLooseMuonCuts(20,2.4,0.2);
             if (debug)cout<<"Getting Tight Electrons"<<endl;
             selectedElectrons        = selection.GetSelectedElectrons();
             if (debug)cout<<"Getting Jets"<<endl;
@@ -640,11 +654,12 @@ int main (int argc, char *argv[]) {
             if (debug)cout<<"Getting Tight Muons"<<endl;
             selectedMuons            = selection.GetSelectedMuons();
             if (debug)cout<<"Getting Loose Muons"<<endl;
-            selectedLooseMuons       = selection.GetSelectedLooseMuons(10., 2.5, 0.2);
+            selectedLooseMuons       = selection.GetSelectedLooseMuons();
             if (debug)cout<<"Getting Loose Electrons"<<endl;
-            selectedLooseElectrons   = selection.GetSelectedLooseElectrons(20.,2.5,0.15); // VBTF ID
+            selectedLooseElectrons   = selection.GetSelectedLooseElectrons(20.0,2.5,0.15); // VBTF ID
 
-            vector<TRootJet*>      selectedBJets;
+            vector<TRootJet*>      selectedMBJets;
+            vector<TRootJet*>      selectedLBJets;
             vector<TRootJet*>      selectedLightJets;
 
             //order jets wrt to Pt, then set bool corresponding to RefSel cuts.
@@ -652,8 +667,8 @@ int main (int argc, char *argv[]) {
             //sort(selectedCSVOrderedJets.begin(), selectedCSVOrderedJets.end(), HighestCVSBtag()); //order Jets wrt CSVtag
 
             int JetCut =0;
-            int nMu = selectedMuons.size(); //Number of Muons in Event
-            int nEl = selectedElectrons.size(); //Number of Electrons in Event
+            int nMu = selectedLooseMuons.size(); //Number of Muons in Event
+            int nEl = selectedLooseElectrons.size(); //Number of Electrons in Event
 
             bool isTagged =false;
             int seljet;
@@ -663,14 +678,18 @@ int main (int argc, char *argv[]) {
             ///////////////////////////////////////////////////
             for ( seljet =0; seljet < selectedJets.size(); seljet++ ) {
                 if (selectedJets[seljet]->btag_combinedSecondaryVertexBJetTags() > workingpointvalue   ) {
-                    selectedBJets.push_back(selectedJets[seljet]);
+                    selectedMBJets.push_back(selectedJets[seljet]);
+                    if (selectedJets[seljet]->btag_combinedSecondaryVertexBJetTags() > 0.244) {
+                        selectedLBJets.push_back(selectedJets[seljet]);
+                        }
                     }
                 else {
                     selectedLightJets.push_back(selectedJets[seljet]);
                     }
                 }
             int njets = selectedJets.size();
-            int ntags = selectedBJets.size();
+            int nMtags = selectedMBJets.size();
+            int nLtags = selectedLBJets.size();
             ///////////////////////////////////////////////////////////////////////////////////
             // Summing HT and calculating leading, lagging, and ratio for Selected and BJets //
             ///////////////////////////////////////////////////////////////////////////////////
@@ -689,8 +708,8 @@ int main (int argc, char *argv[]) {
                 }
             HTRat = HT_leading/HT_lagging;
             double HTb = 0.;
-            for (Int_t seljet1 =0; seljet1 < ntags; seljet1++ ) {
-                HTb += selectedBJets[seljet1]->Pt();
+            for (Int_t seljet1 =0; seljet1 < nMtags; seljet1++ ) {
+                HTb += selectedMBJets[seljet1]->Pt();
                 }
 
             //////////////////////
@@ -702,12 +721,22 @@ int main (int argc, char *argv[]) {
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24., 2);
             if (debug)	cout <<"PrimaryVertexBit: " << isGoodPV << " TriggerBit: " << trigged <<endl;
             if (debug) cin.get();
+            selecTableMuEl.Fill(d,0,scaleFactor);
             if(isGoodPV && trigged) {
-                selecTableMu.Fill(d,0,scaleFactor);
-                if (nMu==2) {
-                    selecTableMu.Fill(d,1,scaleFactor);
-                    if(selectedLooseElectrons.size() == 0 ) {
-                        selecTableMu.Fill(d,2,scaleFactor);
+                selecTableMuEl.Fill(d,1,scaleFactor);
+                if (nMu==1) {
+                    selecTableMuEl.Fill(d,2,scaleFactor);
+                    if(nEl==1) {
+                        selecTableMuEl.Fill(d,3,scaleFactor);
+                        if(nMtags>=1) {
+                            selecTableMuEl.Fill(d,4,scaleFactor);
+                            if(nLtags>=2) {
+                                selecTableMuEl.Fill(d,5,scaleFactor);
+                                if(nLtags>=3) {
+                                    selecTableMuEl.Fill(d,6,scaleFactor);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -720,12 +749,12 @@ int main (int argc, char *argv[]) {
 //            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
 
             if(Muon) {  //Begin Muon Channel Selection
-                if (debug) cout <<"Number of Muons, Jets, BJets, JetCut  ===>  "<< selectedMuons.size() <<"  "  << selectedJets.size()   <<"  " <<  ntags   <<"  "<<JetCut  <<endl;
+                if (debug) cout <<"Number of Muons, Jets, BJets, JetCut  ===>  "<< nMu <<"  "  << selectedJets.size()   <<"  " <<  nMtags   <<"  "<<JetCut  <<endl;
                 if (debug) cin.get();
                 int nTightLeptons, nVetoLeptonsSF, nVetoLeptonsOF;
                 if (debug)	cout <<" applying baseline event selection..."<<endl;
                 //Apply the lepton, btag and HT selections
-                if  (  !( nMu == 2 && selectedLooseElectrons.size() == 0 )) continue; // 2 Muons and 0 Electrons
+                if  (  !( nMu == 1 && nEl == 1 && nMtags >=1 && nLtags >=3 )) continue; // 1 Muons and 1 Electron and 1 CSVM and 2 CSVL
                 passed++;
                 vector<TLorentzVector*> selectedMuonTLV_JC;
                 vector<TLorentzVector> mcParticlesTLV, selectedJetsTLV, mcMuonsTLV;
@@ -761,24 +790,44 @@ int main (int argc, char *argv[]) {
                 // Muon Based Plots //
                 //////////////////////
 
-                MSPlot["NbOfIsolatedMuons"]->Fill(selectedMuons.size(), datasets[d], true, Luminosity*scaleFactor);
-                for (Int_t selmu =0; selmu < selectedMuons.size(); selmu++ ) {
-                    float reliso = (selectedMuons[selmu]->chargedHadronIso() + max( 0.0, selectedMuons[selmu]->neutralHadronIso() + selectedMuons[selmu]->photonIso() - 0.5*selectedMuons[selmu]->puChargedHadronIso() ) ) / selectedMuons[selmu]->Pt();
-                    double muzPVz = fabs(selectedMuons[selmu]->vz() - vertex[0]->Z());
-                    selectedMuonTLV_JC.push_back(selectedMuons[selmu]);
-                    MSPlot["MuonDz"]->Fill(selectedMuons[selmu]->dz() , datasets[d], true, Luminosity*scaleFactor );
-                    MSPlot["MuonPt"]->Fill(selectedMuons[selmu]->Pt(), datasets[d], true, Luminosity*scaleFactor);
-                    MSPlot["MuonEta"]->Fill(selectedMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
-                    MSPlot["MuonPhi"]->Fill(selectedMuons[selmu]->Phi(), datasets[d], true, Luminosity*scaleFactor);
-                    MSPlot["MuonNValidHits"]->Fill(selectedMuons[selmu]->nofValidHits(), datasets[d], true, Luminosity*scaleFactor);
-                    MSPlot["Muond0"]->Fill(selectedMuons[selmu]->d0(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["NbOfLooseMuons"]->Fill(nMu, datasets[d], true, Luminosity*scaleFactor);
+                for (Int_t selmu =0; selmu < selectedLooseMuons.size(); selmu++ ) {
+                    float reliso = (selectedLooseMuons[selmu]->chargedHadronIso() + max( 0.0, selectedLooseMuons[selmu]->neutralHadronIso() + selectedLooseMuons[selmu]->photonIso() - 0.5*selectedLooseMuons[selmu]->puChargedHadronIso() ) ) / selectedLooseMuons[selmu]->Pt();
+                    double muzPVz = fabs(selectedLooseMuons[selmu]->vz() - vertex[0]->Z());
+                    selectedMuonTLV_JC.push_back(selectedLooseMuons[selmu]);
+                    MSPlot["MuonDz"]->Fill(selectedLooseMuons[selmu]->dz() , datasets[d], true, Luminosity*scaleFactor );
+                    MSPlot["MuonPt"]->Fill(selectedLooseMuons[selmu]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["MuonEta"]->Fill(selectedLooseMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["MuonPhi"]->Fill(selectedLooseMuons[selmu]->Phi(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["MuonNValidHits"]->Fill(selectedLooseMuons[selmu]->nofValidHits(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["Muond0"]->Fill(selectedLooseMuons[selmu]->d0(), datasets[d], true, Luminosity*scaleFactor);
                     MSPlot["MuonDistVzPVz"]->Fill(muzPVz, datasets[d], true, Luminosity*scaleFactor );
-                    MSPlot["MuonNMatchedStations"]->Fill(selectedMuons[selmu]->nofMatchedStations(), datasets[d], true, Luminosity*scaleFactor);
-                    MSPlot["MuonTrackerLayersWithMeasurement"]->Fill(selectedMuons[selmu]->nofTrackerLayersWithMeasurement(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["MuonNMatchedStations"]->Fill(selectedLooseMuons[selmu]->nofMatchedStations(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["MuonTrackerLayersWithMeasurement"]->Fill(selectedLooseMuons[selmu]->nofTrackerLayersWithMeasurement(), datasets[d], true, Luminosity*scaleFactor);
                     MSPlot["MuonRelIsolation"]->Fill(reliso, datasets[d], true, Luminosity*scaleFactor);
                     }
-                TLorentzVector diMuon = *selectedMuonTLV_JC[0] + *selectedMuonTLV_JC[1];
-                MSPlot["DiMuon_InvMass"]->Fill(diMuon.M(), datasets[d], true, Luminosity*scaleFactor);
+                if(nMu == 2) {
+                    TLorentzVector diMuon = *selectedMuonTLV_JC[0] + *selectedMuonTLV_JC[1];
+                    MSPlot["DiMuon_InvMass"]->Fill(diMuon.M(), datasets[d], true, Luminosity*scaleFactor);
+                    }
+
+                //////////////////////
+                // Muon Based Plots //
+                //////////////////////
+
+                MSPlot["NbOfLooseElectrons"]->Fill(selectedLooseElectrons.size(), datasets[d], true, Luminosity*scaleFactor);
+                for (Int_t selel =0; selel < selectedLooseElectrons.size(); selel++ ) {
+                    float reliso = (selectedLooseElectrons[selel]->chargedHadronIso() + max( 0.0, selectedLooseElectrons[selel]->neutralHadronIso() + selectedLooseElectrons[selel]->photonIso() - 0.5*selectedLooseElectrons[selel]->puChargedHadronIso() ) ) / selectedLooseElectrons[selel]->Pt();
+                    double elzPVz = fabs(selectedLooseElectrons[selel]->vz() - vertex[0]->Z());
+                    MSPlot["ElectronDz"]->Fill(selectedLooseElectrons[selel]->dz() , datasets[d], true, Luminosity*scaleFactor );
+                    MSPlot["ElectronPt"]->Fill(selectedLooseElectrons[selel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["ElectronEta"]->Fill(selectedLooseElectrons[selel]->Eta(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["ElectronPhi"]->Fill(selectedLooseElectrons[selel]->Phi(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["Electrond0"]->Fill(selectedLooseElectrons[selel]->d0(), datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["ElectronDistVzPVz"]->Fill(elzPVz, datasets[d], true, Luminosity*scaleFactor );
+                    MSPlot["ElectronRelIsolation"]->Fill(reliso, datasets[d], true, Luminosity*scaleFactor);
+                    }
+
 
                 //////////////////////
                 // Jets Based Plots //
@@ -786,7 +835,7 @@ int main (int argc, char *argv[]) {
 
                 MSPlot["NbOfSelectedJets"]->Fill(njets, datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["NbOfSelectedLightJets"]->Fill(selectedLightJets.size(), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["NbOfSelectedBJets"]->Fill(ntags, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["NbOfSelectedMBJets"]->Fill(nMtags, datasets[d], true, Luminosity*scaleFactor);
                 if (selectedJets.size()>=4) MSPlot["4thJetPt"]->Fill(selectedJets[3]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 if (selectedJets.size()>=5) MSPlot["5thJetPt"]->Fill(selectedJets[4]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 if (selectedJets.size()>=6) MSPlot["6thJetPt"]->Fill(selectedJets[5]->Pt(), datasets[d], true, Luminosity*scaleFactor);
@@ -839,10 +888,10 @@ int main (int argc, char *argv[]) {
 
     if(Muon) {
         //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool mergeST)
-        selecTableMu.TableCalculator(  true, true, true, true, true);
+        selecTableMuEl.TableCalculator(  true, true, true, true, true);
 
         //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
-        selecTableMu.Write(  "FourTop"+postfix+"Table_Mu.tex",    false,true,true,true,false,false,false);
+        selecTableMuEl.Write(  "FourTop"+postfix+"Table_Mu.tex",    false,true,true,true,false,false,false);
         }
     else if(Electron) {
         //(bool mergeTT, bool mergeQCD, bool mergeW, bool mergeZ, bool mergeST)
@@ -877,3 +926,4 @@ int Factorial(int N = 1) {
         fact = fact * i;  // OR fact *= i;
     return fact;
     }
+
