@@ -1,0 +1,92 @@
+
+[1mRooFit v3.54 -- Developed by Wouter Verkerke and David Kirkby[0m 
+                Copyright (C) 2000-2012 NIKHEF, University of California & Stanford University
+                All rights reserved, please read http://roofit.sourceforge.net/license.txt
+
+*************************************************************
+ Beginning of the program for the FourTop search ! 
+*************************************************************
+ --> Using the di-Muon channel...
+used config file: config/test_fullsamples.xml
+ - Loading environment ...
+ Lumi/Pileup Reweighting: Computed Weights per In-Time Nint 
+   0 0.133807
+   1 0.234582
+   2 0.27856
+   3 0.25094
+   4 0.265325
+   5 0.546109
+   6 0.442551
+   7 0.434754
+   8 0.600625
+   9 0.920484
+   10 1.33461
+   11 1.7079
+   12 1.77021
+   13 1.58194
+   14 1.34496
+   15 1.1708
+   16 1.08277
+   17 1.05569
+   18 1.07158
+   19 1.11308
+   20 1.1511
+   21 1.17181
+   22 1.17866
+   23 1.17296
+   24 1.14866
+   25 1.10084
+   26 1.02987
+   27 0.939371
+   28 0.832666
+   29 0.714757
+   30 0.593142
+   31 0.475928
+   32 0.369064
+   33 0.27635
+   34 0.199312
+   35 0.137963
+   36 0.0916736
+   37 0.0586222
+   38 0.0362176
+   39 0.0217828
+   40 0.0128783
+   41 0.00757868
+   42 0.00450829
+   43 0.00275872
+   44 0.00176936
+   45 0.00120321
+   46 0.000870439
+   47 0.000666559
+   48 0.000534603
+   49 0.000443986
+   50 0.000378401
+   51 0.00032847
+   52 0.000289043
+   53 0.000256781
+   54 0.000229284
+   55 0.000205233
+   56 0.000183653
+   57 0.000163955
+   58 0.000145693
+   59 0.000270638
+ - Loading datasets ...
+Instantiating jet combiner...
+The MVA stuff will be computed!
+plots prepared...
+vector filled...
+Instantiating computer...
+
+==> Start TMVA Computer
+Reader initialised
+postfix_
+name of weights dir weights/
+--- Reader                   : Booking "BDT method" of type "BDT" from weights/JetCombTrainer_BDT.weights.xml.
+--- DataSetInfo              : Added class "data"	 with internal class number 0
+--- MethodBase               : Reading weight file: weights/JetCombTrainer_BDT.weights.xml
+--- BDT                      : Read method "BDT" of type "BDT"
+--- BDT                      : MVA method was trained with TMVA Version: 4.1.4
+--- BDT                      : MVA method was trained with ROOT Version: 5.34/05
+Unparsed: Classes
+terminate called after throwing an instance of 'std::logic_error'
+  what():  basic_string::_S_construct null not valid
