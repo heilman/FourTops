@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.11.16)  27 JUN 2014 14:37
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.11.16)  16 JUL 2014 13:06
 entering extended mode
  %&-line parsing enabled.
 **FourTop_EventSelection_Dilepton_Unskimmed_Table_MuMu.tex
@@ -66,12 +66,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 5.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 5.
-
-Overfull \hbox (13.05621pt too wide) in paragraph at lines 38--63
- [][] 
- []
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 (./FourTop_EventSelection_Dilepton_Unskimmed_Table_MuMu.aux)
 
 LaTeX Warning: There were multiply-defined labels.
@@ -80,7 +75,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  268 strings out of 495061
  3360 string characters out of 1182620
- 52512 words of memory out of 3000000
+ 51512 words of memory out of 3000000
  3526 multiletter control sequences out of 15000+50000
  3640 words of font info for 14 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
@@ -92,7 +87,7 @@ ype1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
 cmsy7.pfb>
 Output written on FourTop_EventSelection_Dilepton_Unskimmed_Table_MuMu.pdf (1 p
-age, 63721 bytes).
+age, 62296 bytes).
 PDF statistics:
  30 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

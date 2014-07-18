@@ -751,6 +751,7 @@ int main (int argc, char *argv[]) {
             if(!trigged)		   continue;  //If an HLT condition is not present, skip this event in the loop.
             // Declare selection instance
             Selection selection(init_jets, init_muons, init_electrons, mets);
+
             // Define object selection cuts
             selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0);//Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
             selection.setDiElectronCuts(20,2.5,.15,.04,.5,1,0,0);//	selection.setElectronCuts(30.,2.5,0.1,0.02,0.,999.,0,1); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
@@ -820,7 +821,7 @@ int main (int argc, char *argv[]) {
             int nMu, nEl;
             if(Muon && !Electron) {
                 nMu = selectedMuons.size(); //Number of Muons in Event
-                nEl = selectedLooseElectrons.size(); //Number of Electrons in Event
+                nEl = selectedElectrons.size(); //Number of Electrons in Event
                 }
             if(Muon && Electron) {
                 nMu = selectedMuons.size(); //Number of Muons in Event
@@ -889,7 +890,7 @@ int main (int argc, char *argv[]) {
                     if (nMu>=2 ) {
                         selecTable.Fill(d,2,1);
                         if(diMuMass >= 20) {
-//                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,1);
 //                            if(nMtags>=1) {
 //                                selecTable.Fill(d,4,1);
 //                                if(nLtags>=2) {
@@ -952,29 +953,29 @@ int main (int argc, char *argv[]) {
             /////////////////////////////////
             // Applying baseline selection //
             /////////////////////////////////
-            if (!trigged) continue;  // Redunant check that an HLT was triggered
+//            if (!trigged) continue;  // Redunant check that an HLT was triggered
             if (!isGoodPV) continue; // Check that there is a good Primary Vertex
-//            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
-
-            if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  "<< nMu <<"  "  <<nEl<<" "<< selectedJets.size()   <<"  " <<  nMtags   <<"  "<<JetCut  <<"  "<<Muon<<" "<<Electron<<endl;
-            if (debug) cin.get();
-            int nTightLeptons, nVetoLeptonsSF, nVetoLeptonsOF;
-            if (debug)	cout <<" applying baseline event selection..."<<endl;
-            //Apply the lepton, btag and HT selections
-            if (Muon && !Electron) {
-                MSPlot["NbOfMuonsPreSel"]->Fill(nMu, datasets[d], true, Luminosity*scaleFactor);
-                if  (  !( nMu >= 2 && diMuMass >= 20) ) continue; // Di-Muon Channel Selection with dirty muon iso.
-                }
-            else if (Muon && Electron) {
-                if  (  !( nMu >= 1 && nEl >= 1 )) continue; // Muon-Electron Channel Selection
-                }
-            else if (!Muon && Electron) {
-                if  (  !( nEl == 2 )) continue; // Di-Electron Channel Selection
-                }
-            else {
-                cerr<<"Correct Di-lepton Channel not selected."<<endl;
-                exit(1);
-                }
+////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
+//
+//            if (debug) cout <<"Number of Muons, Electrons, Jets, BJets, JetCut, MuonChannel, ElectronChannel ===>  "<< nMu <<"  "  <<nEl<<" "<< selectedJets.size()   <<"  " <<  nMtags   <<"  "<<JetCut  <<"  "<<Muon<<" "<<Electron<<endl;
+//            if (debug) cin.get();
+//            int nTightLeptons, nVetoLeptonsSF, nVetoLeptonsOF;
+//            if (debug)	cout <<" applying baseline event selection..."<<endl;
+//            //Apply the lepton, btag and HT selections
+//            if (Muon && !Electron) {
+//                MSPlot["NbOfMuonsPreSel"]->Fill(nMu, datasets[d], true, Luminosity*scaleFactor);
+//                if  (  !( nMu >= 2 && diMuMass >= 20) ) continue; // Di-Muon Channel Selection with dirty muon iso.
+//                }
+//            else if (Muon && Electron) {
+//                if  (  !( nMu >= 1 && nEl >= 1 )) continue; // Muon-Electron Channel Selection
+//                }
+//            else if (!Muon && Electron) {
+//                if  (  !( nEl == 2 )) continue; // Di-Electron Channel Selection
+//                }
+//            else {
+//                cerr<<"Correct Di-lepton Channel not selected."<<endl;
+//                exit(1);
+//                }
             sort(selectedJets.begin(),selectedJets.end(),HighestCVSBtag());
 
             if(nMtags>=2) {
@@ -990,11 +991,11 @@ int main (int argc, char *argv[]) {
 
 
             //if (!(nMtags>=1 && nLtags>=3)) continue; //Jet Tag Event Selection Requirements
-            if (!(nJets>=3)) continue; //Jet Tag Event Selection Requirements
-            if(debug) {
-                cout<<"Selection Passed."<<endl;
-                cin.get();
-                }
+//            if (!(nJets>=3)) continue; //Jet Tag Event Selection Requirements
+//            if(debug) {
+//                cout<<"Selection Passed."<<endl;
+//                cin.get();
+//                }
             passed++;
 
 
@@ -1025,80 +1026,80 @@ int main (int argc, char *argv[]) {
             // Event Level Variables //
             ///////////////////////////
 
-            //////////////////////////////////////
-            // MVA Hadronic Top Reconstructions //
-            //////////////////////////////////////
-
-            jetCombiner->ProcessEvent_SingleHadTop(datasets[d], mcParticlesMatching_, selectedJets, &selectedMuonsTLV_JC[0], genEvt, scaleFactor);
-
-            if(!TrainMVA) {
-                MVAvals1 = jetCombiner->getMVAValue(MVAmethod, 1); // 1 means the highest MVA value
-                MSPlot["MVA1TriJet"]->Fill(MVAvals1.first, datasets[d], true, Luminosity*scaleFactor );
-
-                for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ ) {
-                    if (seljet1 == MVAvals1.second[0] || seljet1 == MVAvals1.second[1] || seljet1 == MVAvals1.second[2]) {
-                        MVASelJets1.push_back(selectedJets[seljet1]);
-                        }
-
-                    }
-
-                //check data-mc agreement of kin. reco. variables.
-                float mindeltaR =100.;
-                float mindeltaR_temp =100.;
-                int wj1;
-                int wj2;
-                int bj1;
-
-                //define the jets from W as the jet pair with smallest deltaR
-                for (int m=0; m<MVASelJets1.size(); m++) {
-                    for (int n=0; n<MVASelJets1.size(); n++) {
-                        if(n==m) continue;
-                        TLorentzVector lj1  = *MVASelJets1[m];
-                        TLorentzVector lj2  = *MVASelJets1[n];
-                        mindeltaR_temp  = lj1.DeltaR(lj2);
-                        if (mindeltaR_temp < mindeltaR) {
-                            mindeltaR = mindeltaR_temp;
-                            wj1 = m;
-                            wj2 = n;
-                            }
-                        }
-                    }
-                // find the index of the jet not chosen as a W-jet
-                for (unsigned int p=0; p<MVASelJets1.size(); p++) {
-                    if(p!=wj1 && p!=wj2) bj1 = p;
-                    }
-
-                if (debug) cout <<"Processing event with jetcombiner : 3 "<< endl;
-
-                //now that putative b and W jets are chosen, calculate the six kin. variables.
-                TLorentzVector Wh = *MVASelJets1[wj1]+*MVASelJets1[wj2];
-                TLorentzVector Bh = *MVASelJets1[bj1];
-                TLorentzVector Th = Wh+Bh;
-
-                double TriJetMass = Th.M();
-
-                double DiJetMass = Wh.M();
-                //DeltaR
-                float AngleThWh = fabs(Th.DeltaPhi(Wh));
-                float AngleThBh = fabs(Th.DeltaPhi(Bh));
-
-                float btag = MVASelJets1[bj1]->btag_combinedSecondaryVertexBJetTags();
-
-                double PtRat = (( *MVASelJets1[0] + *MVASelJets1[1] + *MVASelJets1[2] ).Pt())/( MVASelJets1[0]->Pt() + MVASelJets1[1]->Pt() + MVASelJets1[2]->Pt() );
-                if (debug) cout <<"Processing event with jetcombiner : 4 "<< endl;
-
-                MSPlot["MVA1TriJetMass"]->Fill(TriJetMass,  datasets[d], true, Luminosity*scaleFactor );
-                MSPlot["MVA1DiJetMass"]->Fill(DiJetMass,  datasets[d], true, Luminosity*scaleFactor );
-                MSPlot["MVA1BTag"]->Fill(btag,  datasets[d], true, Luminosity*scaleFactor );
-                MSPlot["MVA1PtRat"]->Fill(PtRat,  datasets[d], true, Luminosity*scaleFactor );
-                MSPlot["MVA1AnThWh"]->Fill(AngleThWh,  datasets[d], true, Luminosity*scaleFactor );
-                MSPlot["MVA1AnThBh"]->Fill(AngleThBh,  datasets[d], true, Luminosity*scaleFactor );
-
-
-                if (debug) cout <<"Processing event with jetcombiner : 8 "<< endl;
-
-
-            }
+//            //////////////////////////////////////
+//            // MVA Hadronic Top Reconstructions //
+//            //////////////////////////////////////
+//
+//            jetCombiner->ProcessEvent_SingleHadTop(datasets[d], mcParticlesMatching_, selectedJets, &selectedMuonsTLV_JC[0], genEvt, scaleFactor);
+//
+//            if(!TrainMVA) {
+//                MVAvals1 = jetCombiner->getMVAValue(MVAmethod, 1); // 1 means the highest MVA value
+//                MSPlot["MVA1TriJet"]->Fill(MVAvals1.first, datasets[d], true, Luminosity*scaleFactor );
+//
+//                for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ ) {
+//                    if (seljet1 == MVAvals1.second[0] || seljet1 == MVAvals1.second[1] || seljet1 == MVAvals1.second[2]) {
+//                        MVASelJets1.push_back(selectedJets[seljet1]);
+//                        }
+//
+//                    }
+//
+//                //check data-mc agreement of kin. reco. variables.
+//                float mindeltaR =100.;
+//                float mindeltaR_temp =100.;
+//                int wj1;
+//                int wj2;
+//                int bj1;
+//
+//                //define the jets from W as the jet pair with smallest deltaR
+//                for (int m=0; m<MVASelJets1.size(); m++) {
+//                    for (int n=0; n<MVASelJets1.size(); n++) {
+//                        if(n==m) continue;
+//                        TLorentzVector lj1  = *MVASelJets1[m];
+//                        TLorentzVector lj2  = *MVASelJets1[n];
+//                        mindeltaR_temp  = lj1.DeltaR(lj2);
+//                        if (mindeltaR_temp < mindeltaR) {
+//                            mindeltaR = mindeltaR_temp;
+//                            wj1 = m;
+//                            wj2 = n;
+//                            }
+//                        }
+//                    }
+//                // find the index of the jet not chosen as a W-jet
+//                for (unsigned int p=0; p<MVASelJets1.size(); p++) {
+//                    if(p!=wj1 && p!=wj2) bj1 = p;
+//                    }
+//
+//                if (debug) cout <<"Processing event with jetcombiner : 3 "<< endl;
+//
+//                //now that putative b and W jets are chosen, calculate the six kin. variables.
+//                TLorentzVector Wh = *MVASelJets1[wj1]+*MVASelJets1[wj2];
+//                TLorentzVector Bh = *MVASelJets1[bj1];
+//                TLorentzVector Th = Wh+Bh;
+//
+//                double TriJetMass = Th.M();
+//
+//                double DiJetMass = Wh.M();
+//                //DeltaR
+//                float AngleThWh = fabs(Th.DeltaPhi(Wh));
+//                float AngleThBh = fabs(Th.DeltaPhi(Bh));
+//
+//                float btag = MVASelJets1[bj1]->btag_combinedSecondaryVertexBJetTags();
+//
+//                double PtRat = (( *MVASelJets1[0] + *MVASelJets1[1] + *MVASelJets1[2] ).Pt())/( MVASelJets1[0]->Pt() + MVASelJets1[1]->Pt() + MVASelJets1[2]->Pt() );
+//                if (debug) cout <<"Processing event with jetcombiner : 4 "<< endl;
+//
+//                MSPlot["MVA1TriJetMass"]->Fill(TriJetMass,  datasets[d], true, Luminosity*scaleFactor );
+//                MSPlot["MVA1DiJetMass"]->Fill(DiJetMass,  datasets[d], true, Luminosity*scaleFactor );
+//                MSPlot["MVA1BTag"]->Fill(btag,  datasets[d], true, Luminosity*scaleFactor );
+//                MSPlot["MVA1PtRat"]->Fill(PtRat,  datasets[d], true, Luminosity*scaleFactor );
+//                MSPlot["MVA1AnThWh"]->Fill(AngleThWh,  datasets[d], true, Luminosity*scaleFactor );
+//                MSPlot["MVA1AnThBh"]->Fill(AngleThBh,  datasets[d], true, Luminosity*scaleFactor );
+//
+//
+//                if (debug) cout <<"Processing event with jetcombiner : 8 "<< endl;
+//
+//
+//            }
 
                 ///////////////////////////////////
                 // Filling histograms / plotting //
@@ -1209,7 +1210,7 @@ int main (int argc, char *argv[]) {
                 // Electron Based Plots //
                 //////////////////////////
 
-                MSPlot["NbOfIsolatedElectrons"]->Fill(selectedElectrons.size(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["NbOfIsolatedElectrons"]->Fill(nEl, datasets[d], true, Luminosity*scaleFactor);
                 for (Int_t selel =0; selel < selectedElectrons.size(); selel++ ) {
                     float reliso = (selectedElectrons[selel]->chargedHadronIso() + max( 0.0, selectedElectrons[selel]->neutralHadronIso() + selectedElectrons[selel]->photonIso() - 0.5*selectedElectrons[selel]->puChargedHadronIso() ) ) / selectedElectrons[selel]->Pt();
                     double elzPVz = fabs(selectedElectrons[selel]->vz() - vertex[0]->Z());
