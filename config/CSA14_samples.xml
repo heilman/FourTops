@@ -14,7 +14,7 @@
 
 <d name="Zjjj" title="Z+3Jets"  add="0"   color="50" ls="1"  lw="2" normf="1"  EqLumi="50000000" xsection=".001" PreselEff="0.0" filenames="/home/jesse/CMS/EventSamples/53X_v6/unskimmed/zjjj/*.root"/>
 
-<d name="TTJets"  title="t\bar{t}+jets"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="223000.0" xsection="103.04"   PreselEff="0.0"   filenames="/home/jesse/CMS/EventSamples/70X_v1/unskimmed/ttbar/*.root"/>
+<d name="TTJets"  title="t\bar{t}+jets"   add="1"   color="633"  ls="1"  lw="2" normf="1"  EqLumi="223000.0" xsection="103.04"   PreselEff="0.0"   filenames="/home/jesse/CMS/EventSamples/70X_v1/unskimmed/ttbar/TOPTREEv2.root"/>
 
 </datasets>
 

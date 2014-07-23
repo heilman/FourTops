@@ -290,10 +290,10 @@ int main (int argc, char *argv[]) {
     MSPlot["MuonDRMin"]                                     = new MultiSamplePlot(datasets, "MuonDRMin", 40, 0, 4, "dR_{min}");
     MSPlot["IsolatedMuonDRMin"]                             = new MultiSamplePlot(datasets, "IsolatedMuonDRMin", 40, 0, 4, "dR_{min}");
     MSPlot["MuonRelIsolation"]                              = new MultiSamplePlot(datasets, "MuonRelIsolation", 50, 0, .25, "RelIso");
-    MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 35, 0, 300, "PT_{#mu}");
-    MSPlot["MuonPtRel"]                                     = new MultiSamplePlot(datasets, "MuonPtRel", 35, 0, 300, "PT_{#mu}");
-    MSPlot["MuonEta"]                                       = new MultiSamplePlot(datasets, "MuonEta", 25, -2.4, 2.4, "#eta_{#mu}");
-    MSPlot["MuonPhi"]                                       = new MultiSamplePlot(datasets, "MuonPhi", 24, -M_PI, M_PI, "#phi_{#mu}");
+    MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 30, 0, 300, "PT_{#mu}");
+    MSPlot["MuonPtRel"]                                     = new MultiSamplePlot(datasets, "MuonPtRel", 30, 0, 300, "PT_{#mu}");
+    MSPlot["MuonEta"]                                       = new MultiSamplePlot(datasets, "MuonEta", 24, -2.4, 2.4, "#eta_{#mu}");
+    MSPlot["MuonPhi"]                                       = new MultiSamplePlot(datasets, "MuonPhi", 35, -3.5, 3.5, "#phi_{#mu}");
     MSPlot["MuonNValidHits"]                                = new MultiSamplePlot(datasets, "MuonNValidHits", 30, 0, 30, "NValidHits_{#mu}");
     MSPlot["Muond0"]                                        = new MultiSamplePlot(datasets, "Muond0", 50, -0.05, 0.05, "d0_{#mu}");
     MSPlot["MuondZPVz"]                                     = new MultiSamplePlot(datasets, "MuondZPVz", 50, 0, .5, "dZPVZ_{#mu}");
@@ -309,34 +309,43 @@ int main (int argc, char *argv[]) {
     MSPlot["BadPairMuonDPhi"]                               = new MultiSamplePlot(datasets, "BadPairMuonDPhi", 20, 0, 0.2, "abs(#dPhi_{#mu})");
     MSPlot["NbOfLooseMuons"]                                = new MultiSamplePlot(datasets, "NbOfLooseMuons", 10, 0, 10, "Nb. of loose muons");
     MSPlot["MuonPairCharge"]                                = new MultiSamplePlot(datasets, "MuonPairCharge", 5, -2.5, 2.5, "Total charge");
+    MSPlot["MuonChi2"]                                      = new MultiSamplePlot(datasets, "MuonChi2", 11, 0, 11, "#chi^{2}/dof");
+    MSPlot["MuonNPixelHits"]                                = new MultiSamplePlot(datasets, "MuonNPixelHits", 6, 0, 6, "NPixelHits_{#mu}");
 
     //Electrons
     MSPlot["NbOfIsolatedElectrons"]                         = new MultiSamplePlot(datasets, "NbOfIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["NbOfExtraIsolatedElectrons"]                    = new MultiSamplePlot(datasets, "NbOfExtraIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["ElectronRelIsolation"]                          = new MultiSamplePlot(datasets, "ElectronRelIsolation", 50, 0, .25, "RelIso");
-    MSPlot["ElectronPt"]                                    = new MultiSamplePlot(datasets, "ElectronPt", 35, 0, 300, "PT_{#mu}");
-    MSPlot["ElectronEta"]                                   = new MultiSamplePlot(datasets, "ElectronEta", 25, -2.4, 2.4, "#eta_{#mu}");
-    MSPlot["ElectronPhi"]                                   = new MultiSamplePlot(datasets, "ElectronPhi", 50, -4, 4, "#phi_{#mu}");
-    MSPlot["Electrond0"]                                    = new MultiSamplePlot(datasets, "Electrond0", 50, -0.05, 0.05, "d0_{#mu}");
-    MSPlot["ElectrondZPVz"]                                 = new MultiSamplePlot(datasets, "ElectrondZPVz", 50, 0, .5, "dZPVZ_{#mu}");
-    MSPlot["ElectrondRJets"]                                = new MultiSamplePlot(datasets, "ElectrondRJets", 50, 0, 10, "dRJets_{#mu}");
-    MSPlot["ElectronDistVzPVz"]                             = new MultiSamplePlot(datasets, "ElectronDistVzPVz", 50, 0 ,.3, "DistVzPVz_{#mu}");
-    MSPlot["ElectronDz"]                                    = new MultiSamplePlot(datasets, "ElectronDz", 25, -.6 ,.6, "dZ_{#mu}");
+    MSPlot["ElectronPt"]                                    = new MultiSamplePlot(datasets, "ElectronPt", 30, 0, 300, "PT_{e}");
+    MSPlot["ElectronEta"]                                   = new MultiSamplePlot(datasets, "ElectronEta", 24, -2.4, 2.4, "#eta_{e}");
+    MSPlot["ElectronPhi"]                                   = new MultiSamplePlot(datasets, "ElectronPhi", 35, -3.5, 3.5, "#phi_{e}");
+    MSPlot["Electrond0"]                                    = new MultiSamplePlot(datasets, "Electrond0", 50, -0.05, 0.05, "d0_{e}");
+    MSPlot["ElectrondZPVz"]                                 = new MultiSamplePlot(datasets, "ElectrondZPVz", 50, 0, .5, "dZPVZ_{e}");
+    MSPlot["ElectrondRJets"]                                = new MultiSamplePlot(datasets, "ElectrondRJets", 50, 0, 10, "dRJets_{e}");
+    MSPlot["ElectronDistVzPVz"]                             = new MultiSamplePlot(datasets, "ElectronDistVzPVz", 50, 0 ,.3, "DistVzPVz_{e}");
+    MSPlot["Electrondz"]                                    = new MultiSamplePlot(datasets, "Electrondz", 25, -.6 ,.6, "dZ_{e}");
     MSPlot["DiElectron_InvMass"]                            = new MultiSamplePlot(datasets, "DiElectron_InvMass", 60, 0, 120, "DiElectron_InvMass");
     MSPlot["ElectronPairCharge"]                            = new MultiSamplePlot(datasets, "ElectronPairCharge", 5, -2.5, 2.5, "Total charge");
+    MSPlot["ElectronTrackChi2"]                             = new MultiSamplePlot(datasets, "ElectronTrackChi2", 20, 0, 20, "#chi^{2}/dof");
+    MSPlot["ElectronGSFChi2"]                               = new MultiSamplePlot(datasets, "ElectronGSFChi2", 20, 0, 20, "#chi^{2}/dof");
 
     //Plots Specific to MuEl channel
     MSPlot["MuElPairCharge"]                                = new MultiSamplePlot(datasets, "MuElPairCharge", 5, -2.5, 2.5, "Total charge");
 
     //B-tagging discriminators
-    MSPlot["BdiscBJetCand_CSV"]                             = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV", 75, 0, 1, "CSV b-disc.");
+    MSPlot["BdiscBJetCand_CSV"]                             = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV", 20, 0, 1, "CSV b-disc.");
+    MSPlot["BdiscBJetCand_CSV_LowPU"]                       = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV_LowPU", 20, 0, 1, "CSV b-disc.");
+    MSPlot["BdiscBJetCand_CSV_HighPU"]                      = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV_HighPU", 20, 0, 1, "CSV b-disc.");
     //Jets
-    MSPlot["NbOfSelectedJets"]                              = new MultiSamplePlot(datasets, "NbOfSelectedJets", 15, 0, 15, "Nb. of jets");
+    MSPlot["NbOfSelectedJets"]                              = new MultiSamplePlot(datasets, "NbOfSelectedJets", 20, 0, 20, "Nb. of jets");
     MSPlot["NbOfSelectedLightJets"]                         = new MultiSamplePlot(datasets, "NbOfSelectedLightJets", 10, 0, 10, "Nb. of jets");
     MSPlot["NbOfSelectedMBJets"]                            = new MultiSamplePlot(datasets, "NbOfSelectedMBJets", 8, 0, 8, "Nb. of CSVM tags");
-    MSPlot["JetEta"]                                        = new MultiSamplePlot(datasets, "JetEta", 50,-5, 5, "Jet #eta");
-    MSPlot["JetPhi"]                                        = new MultiSamplePlot(datasets, "JetPhi", 50, -M_PI,M_PI , "Jet #phi");
-    MSPlot["SelectedJetPt"]                                 = new MultiSamplePlot(datasets, "SelectedJetPt", 50, 0, 300, "PT_{jet}");
+    MSPlot["JetEta"]                                        = new MultiSamplePlot(datasets, "JetEta", 40,-4, 4, "Jet #eta");
+    MSPlot["JetPhi"]                                        = new MultiSamplePlot(datasets, "JetPhi", 35, -3.5, 3.5, "Jet #phi");
+    MSPlot["JetCHEF"]                                       = new MultiSamplePlot(datasets, "JetCHEF", 20, 0, 1, "Jet CHEF");
+    MSPlot["JetNHEF"]                                       = new MultiSamplePlot(datasets, "JetNHEF", 20, 0, 1, "Jet NHEF");
+    MSPlot["JetNEEF"]                                       = new MultiSamplePlot(datasets, "JetNEEF", 20, 0, 1, "Jet NEEF");
+    MSPlot["SelectedJetPt"]                                 = new MultiSamplePlot(datasets, "SelectedJetPt", 30, 0, 300, "PT_{jet}");
     MSPlot["3rdJetPt"]                                      = new MultiSamplePlot(datasets, "3rdJetPt", 40, 0, 400, "PT_{jet}");
     MSPlot["4thJetPt"]                                      = new MultiSamplePlot(datasets, "4thJetPt", 40, 0, 400, "PT_{jet}");
     MSPlot["5thJetPt"]                                      = new MultiSamplePlot(datasets, "5thJetPt", 40, 0, 400, "PT_{jet}");
@@ -347,17 +356,41 @@ int main (int argc, char *argv[]) {
     MSPlot["HTb_SelectedJets"]                              = new MultiSamplePlot(datasets, "HTb_SelectedJets", 30, 0, 1500, "HTb");
     MSPlot["H"]                                             = new MultiSamplePlot(datasets, "H", 30, 0, 3000, "H");
     MSPlot["HTH"]                                           = new MultiSamplePlot(datasets, "HTH", 25, 0, 1, "HT/H");
-    MSPlot["HTRat"]                                         = new MultiSamplePlot(datasets, "HTRat", 50, 0, 20, "HTRat");
+    MSPlot["HTRat"]                                         = new MultiSamplePlot(datasets, "HTRat", 40, 0, 20, "HTRat");
     MSPlot["HTExcess2M"]                                    = new MultiSamplePlot(datasets, "HTExcess2M", 50, 0, 1000, "HT");
     MSPlot["HExcess2M"]                                     = new MultiSamplePlot(datasets, "HExcess2M", 50, 0, 3000, "H");
     MSPlot["HTExcess1M2L"]                                  = new MultiSamplePlot(datasets, "HTExcess1M2L", 50, 0, 1000, "HT");
     MSPlot["HExcess1M2L"]                                   = new MultiSamplePlot(datasets, "HExcess1M2L", 50, 0, 3000, "H");
 
     //MET
-    MSPlot["MET"]                                           = new MultiSamplePlot(datasets, "MET", 75, 0, 700, "MET");
+    MSPlot["MET"]                                           = new MultiSamplePlot(datasets, "MET", 70, 0, 700, "MET");
 
     //Truth Plots
     MSPlot["LeptonTruth"]                                   = new MultiSamplePlot(datasets, "LeptonTruth", 6, -1, 5, "LeptonTruth");
+    MSPlot["CSVLEfficiency"]                                = new MultiSamplePlot(datasets, "CSVLEfficiency", 2, 0, 2, "True B-Jet");
+    MSPlot["CSVMEfficiency"]                                = new MultiSamplePlot(datasets, "CSVMEfficiency", 2, 0, 2, "True B-Jet");
+    MSPlot["CSVTEfficiency"]                                = new MultiSamplePlot(datasets, "CSVTEfficiency", 2, 0, 2, "True B-Jet");
+    MSPlot["TrueBJetPt"]                                    = new MultiSamplePlot(datasets, "TrueBJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["TrueBJetEta"]                                   = new MultiSamplePlot(datasets, "TrueBJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["TrueBJetCSV"]                                   = new MultiSamplePlot(datasets, "TrueBJetCSV", 20, 0, 1, "CSV_{jet}");
+    MSPlot["TrueCJetPt"]                                    = new MultiSamplePlot(datasets, "TrueCJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["TrueCJetEta"]                                   = new MultiSamplePlot(datasets, "TrueCJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["TrueCJetCSV"]                                   = new MultiSamplePlot(datasets, "TrueCJetCSV", 20, 0, 1, "CSV_{jet}");
+    MSPlot["TrueLJetPt"]                                    = new MultiSamplePlot(datasets, "TrueLJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["TrueLJetEta"]                                   = new MultiSamplePlot(datasets, "TrueLJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["TrueLJetCSV"]                                   = new MultiSamplePlot(datasets, "TrueLJetCSV", 20, 0, 1, "CSV_{jet}");
+    MSPlot["TrueBJetPtLowPU"]                               = new MultiSamplePlot(datasets, "TrueBJetPtLowPU", 30, 0, 300, "PT_{jet}");
+    MSPlot["TrueBJetEtaLowPU"]                              = new MultiSamplePlot(datasets, "TrueBJetEtaLowPU", 40, -4, 4, "#eta_{jet}");
+    MSPlot["TrueBJetCSVLowPU"]                              = new MultiSamplePlot(datasets, "TrueBJetCSVLowPU", 20, 0, 1, "CSV_{jet}");
+    MSPlot["TrueBJetPtHighPU"]                              = new MultiSamplePlot(datasets, "TrueBJetPtHighPU", 30, 0, 300, "PT_{jet}");
+    MSPlot["TrueBJetEtaHighPU"]                             = new MultiSamplePlot(datasets, "TrueBJetEtaHighPU", 40, -4, 4, "#eta_{jet}");
+    MSPlot["TrueBJetCSVHighPU"]                             = new MultiSamplePlot(datasets, "TrueBJetCSVHighPU", 20, 0, 1, "CSV_{jet}");
+    MSPlot["CSVMTrueBJetPt"]                                = new MultiSamplePlot(datasets, "CSVMTrueBJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["CSVMTrueCJetPt"]                                = new MultiSamplePlot(datasets, "CSVMTrueCJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["CSVMTrueLJetPt"]                                = new MultiSamplePlot(datasets, "CSVMTrueLJetPt", 30, 0, 300, "PT_{jet}");
+    MSPlot["CSVMTrueBJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueBJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["CSVMTrueCJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueCJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["CSVMTrueLJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueLJetEta", 40, -4, 4, "#eta_{jet}");
     MSPlot["SameSignMuonType"]                              = new MultiSamplePlot(datasets, "SameSignMuonType", 26, -1, 25, "Muon Type Code");
     MSPlot["SameSignMuonParentType"]                        = new MultiSamplePlot(datasets, "SameSignMuonParentType", 26, -1, 25, "Parent Type Code");
     MSPlot["SameSignMuonGrannyType"]                        = new MultiSamplePlot(datasets, "SameSignMuonGrannyType", 26, -1, 25, "Granny Type Code");
@@ -731,8 +764,8 @@ int main (int argc, char *argv[]) {
             if(!trigged)		   continue;  //If an HLT condition is not present, skip this event in the loop.
             // Declare selection instance
             Selection selection(init_jets, init_muons, init_electrons, mets);
-            if(debug){
-                for(int selel = 0; selel < init_electrons.size(); selel++){
+            if(debug) {
+                for(int selel = 0; selel < init_electrons.size(); selel++) {
                     cout << "PreSel Electron Pt: " << init_electrons[selel]->Pt() << endl;
                     cout << "PreSel Electron Eta: " << init_electrons[selel]->Eta() << endl;
                     cout << "PreSel Electron d0: " << init_electrons[selel]->d0() << endl;
@@ -741,10 +774,10 @@ int main (int argc, char *argv[]) {
                     cout << "PreSel Electron dz: " << init_electrons[selel]->dz() << endl;
                     cout << "PreSel Electron MissHits: " << init_electrons[selel]->missingHits() << endl;
                     cout << "PreSel Electron Passed Conversion: " << init_electrons[selel]->passConversion() << endl;
+                    }
                 }
-            }
-            if(debug){
-                for(int selmu = 0; selmu < init_muons.size(); selmu++){
+            if(debug) {
+                for(int selmu = 0; selmu < init_muons.size(); selmu++) {
                     cout << "PreSel Muon Pt: " << init_muons[selmu]->Pt() << endl;
                     cout << "PreSel Muon Eta: " << init_muons[selmu]->Eta() << endl;
                     cout << "PreSel Muon d0: " << init_muons[selmu]->d0() << endl;
@@ -753,23 +786,19 @@ int main (int argc, char *argv[]) {
                     cout << "PreSel Muon dz: " << init_muons[selmu]->dz() << endl;
                     cout << "PreSel Muon MatchedStations: " << init_muons[selmu]->nofMatchedStations() << endl;
                     cout << "PreSel Muon Pixel hits: " << init_muons[selmu]->nofValidPixelHits() << endl;
+                    }
                 }
-            }
             // Define object selection cuts
             if(datasets[d]->Name()=="TTJets_LooseSel") {
-                selection.setJetCuts(10,5.2,0.01,1,0,0,0);
-                selection.setElectronCuts(10,2.5,.2,10000,.5,1,0);//	selection.setElectronCuts(30.,2.5,0.1,0.02,0.,999.,0,1); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
-            //selection.setLooseElectronCuts(10,2.5,0.15,0);
-            selection.setMuonCuts(15, 2.1, 0.12, 0.02, 0.3, -10000, 0.5, 5, 0);
-            //selection.setLooseMuonCuts();
+                selection.setJetCuts(10,3,0.01,1,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                selection.setElectronCuts(10,2.5,.2,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                selection.setMuonCuts(15, 2.1, 0.2, 0.02, 0.3, -10000, 0.5, 5, 0);
                 }
             else {
-                selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0);//Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
-                selection.setElectronCuts(20,2.5,.15,10000,.5,1,0);//	selection.setElectronCuts(30.,2.5,0.1,0.02,0.,999.,0,1); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
-            //selection.setLooseElectronCuts(10,2.5,0.15,0);
-            selection.setMuonCuts(26, 2.1, 0.2, 0.02, 0.3, -10000, 0.5, 5, 0);
-            //selection.setLooseMuonCuts();
-            }
+                selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                selection.setMuonCuts(26, 2.1, 0.12, 0.02, 0.3, -10000, 0.5, 5, 0);
+                }
 
 
 
@@ -1138,6 +1167,7 @@ int main (int argc, char *argv[]) {
                 if(debug) cout << "Reliso: "<< reliso << endl;
                 if(debug) cout << " chISO: " << selectedMuons[selmu]->chargedHadronIso() << endl;
                 MSPlot["MuonDz"]->Fill(selectedMuons[selmu]->dz() , datasets[d], true, Luminosity*scaleFactor );
+                MSPlot["MuonChi2"]->Fill(selectedMuons[selmu]->chi2() , datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["MuonPt"]->Fill(selectedMuons[selmu]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonPtRel"]->Fill(MuonPTRel[selmu], datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonEta"]->Fill(selectedMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
@@ -1146,6 +1176,7 @@ int main (int argc, char *argv[]) {
                 MSPlot["Muond0"]->Fill(selectedMuons[selmu]->d0(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonDistVzPVz"]->Fill(muzPVz, datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["MuonNMatchedStations"]->Fill(selectedMuons[selmu]->nofMatchedStations(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonNPixelHits"]->Fill(selectedMuons[selmu]->nofValidPixelHits(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonTrackerLayersWithMeasurement"]->Fill(selectedMuons[selmu]->nofTrackerLayersWithMeasurement(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonDRMin"]->Fill(MuondRMin[selmu], datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonRelIsolation"]->Fill(reliso, datasets[d], true, Luminosity*scaleFactor);
@@ -1227,13 +1258,15 @@ int main (int argc, char *argv[]) {
                 float reliso = (selectedElectrons[selel]->chargedHadronIso() + max( 0.0, selectedElectrons[selel]->neutralHadronIso() + selectedElectrons[selel]->photonIso() - 0.5*selectedElectrons[selel]->puChargedHadronIso() ) ) / selectedElectrons[selel]->Pt();
                 double elzPVz = fabs(selectedElectrons[selel]->vz() - vertex[0]->Z());
                 selectedElectronsTLV_JC.push_back(*selectedElectrons[selel]);
-                MSPlot["ElectronDz"]->Fill(selectedElectrons[selel]->dz() , datasets[d], true, Luminosity*scaleFactor );
+                MSPlot["Electrondz"]->Fill(selectedElectrons[selel]->dz() , datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["ElectronPt"]->Fill(selectedElectrons[selel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["ElectronEta"]->Fill(selectedElectrons[selel]->Eta(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["ElectronPhi"]->Fill(selectedElectrons[selel]->Phi(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["Electrond0"]->Fill(selectedElectrons[selel]->d0(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["ElectronDistVzPVz"]->Fill(elzPVz, datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["ElectronRelIsolation"]->Fill(reliso, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["ElectronTrackChi2"]->Fill(selectedElectrons[selel]->trackNormalizedChi2(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["ElectronGSFChi2"]->Fill(selectedElectrons[selel]->gsfTrackNormalizedChi2(), datasets[d], true, Luminosity*scaleFactor);
                 }
             if(nEl>=2 && !Muon && Electron) {
                 float pairCharge = selectedElectrons[0]->charge() + selectedElectrons[1]->charge();
@@ -1279,6 +1312,58 @@ int main (int argc, char *argv[]) {
                 MSPlot["SelectedJetPt"]->Fill(selectedJets[seljet1]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["JetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["JetPhi"]->Fill(selectedJets[seljet1]->Phi() , datasets[d], true, Luminosity*scaleFactor);
+//                MSPlot["JetCHEF"]->Fill(selectedJets[seljet1]->chargedHadronEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
+//                MSPlot["JetNHEF"]->Fill(selectedJets[seljet1]->neutralHadronEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
+//                MSPlot["JetNEEF"]->Fill(selectedJets[seljet1]->neutralEmEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
+                if(abs(selectedJets[seljet1]->partonFlavour()) == 5) {
+                    MSPlot["TrueBJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueBJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueBJetCSV"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() , datasets[d], true, Luminosity*scaleFactor);
+                    if(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() >= 0.224) MSPlot["CSVLEfficiency"]->Fill(1 , datasets[d], true, Luminosity*scaleFactor);
+                    else MSPlot["CSVLEfficiency"]->Fill(0 , datasets[d], true, Luminosity*scaleFactor);
+                    if(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() >= 0.679){
+                         MSPlot["CSVMEfficiency"]->Fill(1 , datasets[d], true, Luminosity*scaleFactor);
+                         MSPlot["CSVMTrueBJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                         MSPlot["CSVMTrueBJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    }
+                    else MSPlot["CSVMEfficiency"]->Fill(0 , datasets[d], true, Luminosity*scaleFactor);
+                    if(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() >= 0.898) MSPlot["CSVTEfficiency"]->Fill(1 , datasets[d], true, Luminosity*scaleFactor);
+                    else MSPlot["CSVTEfficiency"]->Fill(0 , datasets[d], true, Luminosity*scaleFactor);
+                    }
+                    if(abs(selectedJets[seljet1]->partonFlavour()) == 4) {
+                    MSPlot["TrueCJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueCJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueCJetCSV"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() , datasets[d], true, Luminosity*scaleFactor);
+                    if(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() >= 0.679){
+                        MSPlot["CSVMTrueCJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["CSVMTrueCJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    }
+                    }
+                if(abs(selectedJets[seljet1]->partonFlavour()) < 4) {
+                    MSPlot["TrueLJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueLJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                    MSPlot["TrueLJetCSV"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() , datasets[d], true, Luminosity*scaleFactor);
+                    if(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() >= 0.679){
+                        MSPlot["CSVMTrueLJetPt"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["CSVMTrueLJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                    }
+                    }
+                if(vertex.size()<= 15) {
+                    MSPlot["BdiscBJetCand_CSV_LowPU"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags(),datasets[d], true, Luminosity*scaleFactor);
+                    if(abs(selectedJets[seljet1]->partonFlavour()) == 5) {
+                        MSPlot["TrueBJetEtaLowPU"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["TrueBJetPtLowPU"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["TrueBJetCSVLowPU"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() , datasets[d], true, Luminosity*scaleFactor);
+                        }
+                    }
+                if(vertex.size()>= 25) {
+                    MSPlot["BdiscBJetCand_CSV_HighPU"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags(),datasets[d], true, Luminosity*scaleFactor);
+                    if(abs(selectedJets[seljet1]->partonFlavour()) == 5) {
+                        MSPlot["TrueBJetEtaHighPU"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["TrueBJetPtHighPU"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
+                        MSPlot["TrueBJetCSVHighPU"]->Fill(selectedJets[seljet1]->btag_combinedSecondaryVertexBJetTags() , datasets[d], true, Luminosity*scaleFactor);
+                        }
+                    }
 
                 //Event-level variables
                 jetpt = selectedJets[seljet1]->Pt();
