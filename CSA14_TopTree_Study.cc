@@ -116,6 +116,7 @@ int main (int argc, char *argv[]) {
     string btagger = "CSVM";
     float scalefactorbtageff, mistagfactor;
     float workingpointvalue = 0.679; //working points updated to 2012 BTV-POG recommendations.
+    bool bx25 = false;
 
     if(btagger == "CSVL")
         workingpointvalue = .244;
@@ -140,24 +141,37 @@ int main (int argc, char *argv[]) {
     string channelpostfix = "";
     string xmlFileName = "";
 
-    //Setting Lepton Channels (Setting both flags true will select Muon-Electron Channel)
+    //Setting Lepton Channels (Setting both flags true will select Muon-Electron Channel when dilepton is also true)
+    bool dilepton = false;
     bool Muon = true;
     bool Electron = false;
 
-    if(Muon && !Electron) {
+    if(Muon && !Electron && dilepton) {
         cout << " --> Using the di-Muon channel..." << endl;
         channelpostfix = "_MuMu";
         xmlFileName = "config/CSA14_samples.xml";
         }
-    else if(Muon && Electron) {
+    else if(Muon && Electron && dilepton) {
         cout << " --> Using the Muon-Electron channel..." << endl;
         channelpostfix = "_MuEl";
         xmlFileName = "config/CSA14_samples.xml";
         }
-    else if(!Muon && Electron) {
+    else if(!Muon && Electron && dilepton) {
         cout << " --> Using the di-Electron channel..." << endl;
         channelpostfix = "_ElEl";
         xmlFileName = "config/CSA14_samples.xml";
+        }
+    else if(Muon && !Electron && !dilepton) {
+        cout << " --> Using the Single Muon channel..." << endl;
+        channelpostfix = "_Mu";
+        xmlFileName = "config/CSA14_samples.xml";
+//        xmlFileName = "config/test_mconly.xml";
+        }
+        else if(!Muon && Electron && !dilepton) {
+        cout << " --> Using the Single Electron channel..." << endl;
+        channelpostfix = "_El";
+        xmlFileName = "config/CSA14_samples.xml";
+//        xmlFileName = "config/test_mconly.xml";
         }
     else {
         cerr<<"Correct Di-lepton Channel not selected."<<endl;
@@ -283,13 +297,15 @@ int main (int argc, char *argv[]) {
     ////////////////////////////////////////////////////////////////////
 
     MSPlot["RhoCorrection"]                                 = new MultiSamplePlot(datasets, "RhoCorrection", 100, 0, 100, "#rho");
-    MSPlot["NbOfVertices"]                                  = new MultiSamplePlot(datasets, "NbOfVertices", 40, 0, 40, "Nb. of vertices");
+    MSPlot["NbOfVertices"]                                  = new MultiSamplePlot(datasets, "NbOfVertices", 60, 0, 60, "Nb. of vertices");
+    MSPlot["NbOfVerticesPreSel"]                            = new MultiSamplePlot(datasets, "NbOfVerticesPreSel", 60, 0, 60, "Nb. of vertices");
     //Muons
-    MSPlot["NbOfMuonsPreSel"]                               = new MultiSamplePlot(datasets, "NbOfMuonsPreSel", 5, 0, 5, "Nb. of  muons");
-    MSPlot["NbOfMuonsPostSel"]                              = new MultiSamplePlot(datasets, "NbOfMuonsPostSel", 5, 0, 5, "Nb. of  muons");
+    MSPlot["NbOfGenMuons"]                                  = new MultiSamplePlot(datasets, "NbOfGenMuons", 5, 0, 5, "Nb. of gen muons");
+    MSPlot["NbOfMuonsPreSel"]                               = new MultiSamplePlot(datasets, "NbOfMuonsPreSel", 5, 0, 5, "Nb. of muons");
+    MSPlot["NbOfMuonsPostSel"]                              = new MultiSamplePlot(datasets, "NbOfMuonsPostSel", 5, 0, 5, "Nb. of muons");
     MSPlot["MuonDRMin"]                                     = new MultiSamplePlot(datasets, "MuonDRMin", 40, 0, 4, "dR_{min}");
     MSPlot["IsolatedMuonDRMin"]                             = new MultiSamplePlot(datasets, "IsolatedMuonDRMin", 40, 0, 4, "dR_{min}");
-    MSPlot["MuonRelIsolation"]                              = new MultiSamplePlot(datasets, "MuonRelIsolation", 50, 0, .25, "RelIso");
+    MSPlot["MuonRelIsolation"]                              = new MultiSamplePlot(datasets, "MuonRelIsolation", 10, 0, .25, "RelIso");
     MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 30, 0, 300, "PT_{#mu}");
     MSPlot["MuonPtRel"]                                     = new MultiSamplePlot(datasets, "MuonPtRel", 30, 0, 300, "PT_{#mu}");
     MSPlot["MuonEta"]                                       = new MultiSamplePlot(datasets, "MuonEta", 24, -2.4, 2.4, "#eta_{#mu}");
@@ -311,11 +327,38 @@ int main (int argc, char *argv[]) {
     MSPlot["MuonPairCharge"]                                = new MultiSamplePlot(datasets, "MuonPairCharge", 5, -2.5, 2.5, "Total charge");
     MSPlot["MuonChi2"]                                      = new MultiSamplePlot(datasets, "MuonChi2", 11, 0, 11, "#chi^{2}/dof");
     MSPlot["MuonNPixelHits"]                                = new MultiSamplePlot(datasets, "MuonNPixelHits", 6, 0, 6, "NPixelHits_{#mu}");
+    MSPlot["MuonRelIsolationPreSel"]                        = new MultiSamplePlot(datasets, "MuonRelIsolationPreSel", 10, 0, .25, "RelIso");
+    MSPlot["MuonPtPreSel"]                                  = new MultiSamplePlot(datasets, "MuonPtPreSel", 30, 0, 300, "PT_{#mu}");
+    MSPlot["MuonEtaPreSel"]                                 = new MultiSamplePlot(datasets, "MuonEtaPreSel", 24, -2.4, 2.4, "#eta_{#mu}");
+    MSPlot["MuonRelNHI4PreSel"]                             = new MultiSamplePlot(datasets, "MuonRelNHI4PreSel", 50, 0,1, "Relative NHad p_{T}");
+    MSPlot["MuonRelCHI4PreSel"]                             = new MultiSamplePlot(datasets, "MuonRelCHI4PreSel", 50, 0,1, "Relative CHad p_{T}");
+    MSPlot["MuonRelPhI4PreSel"]                             = new MultiSamplePlot(datasets, "MuonRelPhI4PreSel", 50, 0,1, "Relative Photon p_{T}");
+    MSPlot["MuonRelPUCHI4PreSel"]                           = new MultiSamplePlot(datasets, "MuonRelPUCHI4PreSel", 50, 0,1, "Relative CHad p_{T} from PU");
+    MSPlot["MuonRelTotN4PreSel"]                            = new MultiSamplePlot(datasets, "MuonRelTotN4PreSel", 50, 0,1, "Relative Neu p_{T}");
+    MSPlot["MuonRelIsoPreSel"]                              = new MultiSamplePlot(datasets, "MuonRelIsoPreSel", 50, 0, 1, "RelIso");
+    MSPlot["MuonRelNminusPUCH"]                             = new MultiSamplePlot(datasets, "MuonRelNminusPUCH", 50, -1, 1, "Relative N-PUCH");
+    MSPlot["MuonRelNminusBPUCH"]                            = new MultiSamplePlot(datasets, "MuonRelNminusBPUCH", 50, -1, 1, "Relative N-#beta * PUCH");
+    MSPlot["MuonBeta"]                                      = new MultiSamplePlot(datasets, "MuonBeta", 50, -1, 1, "#Delta#beta");
+
+    //Different dBeta RelIso Plots
+    MSPlot["MuonRelIso0"]                                   = new MultiSamplePlot(datasets, "MuonRelIso0", 50, 0, 1, "RelIso(#Delta#beta = 0.1)");
+    MSPlot["MuonRelIso1"]                                   = new MultiSamplePlot(datasets, "MuonRelIso1", 50, 0, 1, "RelIso(#Delta#beta = 0.1)");
+    MSPlot["MuonRelIso2"]                                   = new MultiSamplePlot(datasets, "MuonRelIso2", 50, 0, 1, "RelIso(#Delta#beta = 0.2)");
+    MSPlot["MuonRelIso3"]                                   = new MultiSamplePlot(datasets, "MuonRelIso3", 50, 0, 1, "RelIso(#Delta#beta = 0.3)");
+    MSPlot["MuonRelIso4"]                                   = new MultiSamplePlot(datasets, "MuonRelIso4", 50, 0, 1, "RelIso(#Delta#beta = 0.4)");
+    MSPlot["MuonRelIso5"]                                   = new MultiSamplePlot(datasets, "MuonRelIso5", 50, 0, 1, "RelIso(#Delta#beta = 0.5)");
+    MSPlot["MuonRelIso6"]                                   = new MultiSamplePlot(datasets, "MuonRelIso6", 50, 0, 1, "RelIso(#Delta#beta = 0.6)");
+    MSPlot["MuonRelIso7"]                                   = new MultiSamplePlot(datasets, "MuonRelIso7", 50, 0, 1, "RelIso(#Delta#beta = 0.7)");
+    MSPlot["MuonRelIso8"]                                   = new MultiSamplePlot(datasets, "MuonRelIso8", 50, 0, 1, "RelIso(#Delta#beta = 0.8)");
+    MSPlot["MuonRelIso9"]                                   = new MultiSamplePlot(datasets, "MuonRelIso9", 50, 0, 1, "RelIso(#Delta#beta = 0.9)");
+    MSPlot["MuonRelIso10"]                                  = new MultiSamplePlot(datasets, "MuonRelIso10", 50, 0, 1, "RelIso(#Delta#beta = 1.0)");
+
+
 
     //Electrons
     MSPlot["NbOfIsolatedElectrons"]                         = new MultiSamplePlot(datasets, "NbOfIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["NbOfExtraIsolatedElectrons"]                    = new MultiSamplePlot(datasets, "NbOfExtraIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
-    MSPlot["ElectronRelIsolation"]                          = new MultiSamplePlot(datasets, "ElectronRelIsolation", 50, 0, .25, "RelIso");
+    MSPlot["ElectronRelIsolation"]                          = new MultiSamplePlot(datasets, "ElectronRelIsolation", 10, 0, .25, "RelIso");
     MSPlot["ElectronPt"]                                    = new MultiSamplePlot(datasets, "ElectronPt", 30, 0, 300, "PT_{e}");
     MSPlot["ElectronEta"]                                   = new MultiSamplePlot(datasets, "ElectronEta", 24, -2.4, 2.4, "#eta_{e}");
     MSPlot["ElectronPhi"]                                   = new MultiSamplePlot(datasets, "ElectronPhi", 35, -3.5, 3.5, "#phi_{e}");
@@ -328,6 +371,11 @@ int main (int argc, char *argv[]) {
     MSPlot["ElectronPairCharge"]                            = new MultiSamplePlot(datasets, "ElectronPairCharge", 5, -2.5, 2.5, "Total charge");
     MSPlot["ElectronTrackChi2"]                             = new MultiSamplePlot(datasets, "ElectronTrackChi2", 20, 0, 20, "#chi^{2}/dof");
     MSPlot["ElectronGSFChi2"]                               = new MultiSamplePlot(datasets, "ElectronGSFChi2", 20, 0, 20, "#chi^{2}/dof");
+    MSPlot["ElectronPtPreSel"]                              = new MultiSamplePlot(datasets, "ElectronPtPreSel", 30, 0, 300, "PT_{e}");
+    MSPlot["ElectronEtaPreSel"]                             = new MultiSamplePlot(datasets, "ElectronEtaPreSel", 24, -2.4, 2.4, "#eta_{e}");
+    MSPlot["ElectronRelIsolationPreSel"]                    = new MultiSamplePlot(datasets, "ElectronRelIsolationPreSel", 10, 0, .25, "RelIso");
+
+
 
     //Plots Specific to MuEl channel
     MSPlot["MuElPairCharge"]                                = new MultiSamplePlot(datasets, "MuElPairCharge", 5, -2.5, 2.5, "Total charge");
@@ -342,9 +390,8 @@ int main (int argc, char *argv[]) {
     MSPlot["NbOfSelectedMBJets"]                            = new MultiSamplePlot(datasets, "NbOfSelectedMBJets", 8, 0, 8, "Nb. of CSVM tags");
     MSPlot["JetEta"]                                        = new MultiSamplePlot(datasets, "JetEta", 40,-4, 4, "Jet #eta");
     MSPlot["JetPhi"]                                        = new MultiSamplePlot(datasets, "JetPhi", 35, -3.5, 3.5, "Jet #phi");
-    MSPlot["JetCHEF"]                                       = new MultiSamplePlot(datasets, "JetCHEF", 20, 0, 1, "Jet CHEF");
-    MSPlot["JetNHEF"]                                       = new MultiSamplePlot(datasets, "JetNHEF", 20, 0, 1, "Jet NHEF");
-    MSPlot["JetNEEF"]                                       = new MultiSamplePlot(datasets, "JetNEEF", 20, 0, 1, "Jet NEEF");
+    MSPlot["JetCEF"]                                        = new MultiSamplePlot(datasets, "JetCEF", 50, 0, 1, "Jet CHEF");
+    MSPlot["JetNEF"]                                        = new MultiSamplePlot(datasets, "JetNEF", 50, 0, 1, "Jet NEEF");
     MSPlot["SelectedJetPt"]                                 = new MultiSamplePlot(datasets, "SelectedJetPt", 30, 0, 300, "PT_{jet}");
     MSPlot["3rdJetPt"]                                      = new MultiSamplePlot(datasets, "3rdJetPt", 40, 0, 400, "PT_{jet}");
     MSPlot["4thJetPt"]                                      = new MultiSamplePlot(datasets, "4thJetPt", 40, 0, 400, "PT_{jet}");
@@ -361,6 +408,12 @@ int main (int argc, char *argv[]) {
     MSPlot["HExcess2M"]                                     = new MultiSamplePlot(datasets, "HExcess2M", 50, 0, 3000, "H");
     MSPlot["HTExcess1M2L"]                                  = new MultiSamplePlot(datasets, "HTExcess1M2L", 50, 0, 1000, "HT");
     MSPlot["HExcess1M2L"]                                   = new MultiSamplePlot(datasets, "HExcess1M2L", 50, 0, 3000, "H");
+    MSPlot["SelectedJetPtPreSel"]                           = new MultiSamplePlot(datasets, "SelectedJetPtPreSel", 30, 0, 300, "PT_{jet}");
+    MSPlot["JetEtaPreSel"]                                  = new MultiSamplePlot(datasets, "JetEtaPreSel", 40,-4, 4, "Jet #eta");
+    MSPlot["JetEnergyRatio"]                                = new MultiSamplePlot(datasets, "JetEnergyRatio", 50,0, 10, "Charge/Neutral");
+    MSPlot["JetMultiplicityRatio"]                          = new MultiSamplePlot(datasets, "JetMultiplicityRatio", 50,0, 10, "Charge/Neutral");
+
+
 
     //MET
     MSPlot["MET"]                                           = new MultiSamplePlot(datasets, "MET", 70, 0, 700, "MET");
@@ -391,6 +444,9 @@ int main (int argc, char *argv[]) {
     MSPlot["CSVMTrueBJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueBJetEta", 40, -4, 4, "#eta_{jet}");
     MSPlot["CSVMTrueCJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueCJetEta", 40, -4, 4, "#eta_{jet}");
     MSPlot["CSVMTrueLJetEta"]                               = new MultiSamplePlot(datasets, "CSVMTrueLJetEta", 40, -4, 4, "#eta_{jet}");
+    MSPlot["MuonType"]                                      = new MultiSamplePlot(datasets, "MuonType", 26, -1, 25, "Muon Type Code");
+    MSPlot["MuonParentType"]                                = new MultiSamplePlot(datasets, "MuonParentType", 26, -1, 25, "Parent Type Code");
+    MSPlot["MuonGrannyType"]                                = new MultiSamplePlot(datasets, "MuonGrannyType", 26, -1, 25, "Granny Type Code");
     MSPlot["SameSignMuonType"]                              = new MultiSamplePlot(datasets, "SameSignMuonType", 26, -1, 25, "Muon Type Code");
     MSPlot["SameSignMuonParentType"]                        = new MultiSamplePlot(datasets, "SameSignMuonParentType", 26, -1, 25, "Parent Type Code");
     MSPlot["SameSignMuonGrannyType"]                        = new MultiSamplePlot(datasets, "SameSignMuonGrannyType", 26, -1, 25, "Granny Type Code");
@@ -403,11 +459,11 @@ int main (int argc, char *argv[]) {
     //N-1 Plots
     MSPlot["ElectronLoosePt"]                               = new MultiSamplePlot(datasets, "ElectronLoosePt", 30, 0, 300, "PT_{e}");
     MSPlot["ElectronLooseEta"]                              = new MultiSamplePlot(datasets, "ElectronLooseEta", 50, -5, 5, "#eta_{e}");
-    MSPlot["ElectronLooseIso"]                              = new MultiSamplePlot(datasets, "ElectronLooseIso", 20, 0, 0.5, "PFRelIso_{e}");
+    MSPlot["ElectronLooseIso"]                              = new MultiSamplePlot(datasets, "ElectronLooseIso", 40, 0, 1, "PFRelIso_{e}");
 
     MSPlot["MuonLoosePt"]                                   = new MultiSamplePlot(datasets, "MuonLoosePt", 30, 0, 300, "PT_{#mu}");
     MSPlot["MuonLooseEta"]                                  = new MultiSamplePlot(datasets, "MuonLooseEta", 50, -5, 5, "#eta_{#mu}");
-    MSPlot["MuonLooseIso"]                                  = new MultiSamplePlot(datasets, "MuonLooseIso", 20, 0, 0.5, "PFRelIso_{#mu}");
+    MSPlot["MuonLooseIso"]                                  = new MultiSamplePlot(datasets, "MuonLooseIso", 40, 0, 1, "PFRelIso_{#mu}");
 
     MSPlot["JetLoosePt"]                                    = new MultiSamplePlot(datasets, "JetLoosePt", 30, 0, 300, "PT_{e}");
     MSPlot["JetLooseEta"]                                   = new MultiSamplePlot(datasets, "JetLooseEta", 50, -5, 5, "#eta_{e}");
@@ -433,42 +489,72 @@ int main (int argc, char *argv[]) {
     mkdir(pathPNG.c_str(),0777);
 
     cout <<"Making directory :"<< pathPNG  <<endl;
-
-    /////////////////////////////////
-    // Selection table: Dilepton + jets
-    /////////////////////////////////
     vector<string> CutsselecTable;
-    if(Muon && !Electron) {
-        CutsselecTable.push_back(string("initial"));
-        CutsselecTable.push_back(string("Event cleaning and Trigger"));
-        CutsselecTable.push_back(string("Exactly 1 Isolated Muon (PFRelIso04$\\leq 0.12$)"));
-//        CutsselecTable.push_back(string("Highest 2 pT Muon Mass $\\geq 20 GeV$"));
-        CutsselecTable.push_back(string("At least 2 CSVM Jets"));
-//        CutsselecTable.push_back(string("At least 1 extra CSVL Jet"));
-//        CutsselecTable.push_back(string("At least 2 extra CSVL Jet"));
-        CutsselecTable.push_back(string("At least 2 Jets"));
-        CutsselecTable.push_back(string("At least 3 Jets"));
-        CutsselecTable.push_back(string("At least 4 Jets"));
-        }
-    if(Muon && Electron) {
-        CutsselecTable.push_back(string("initial"));
-        CutsselecTable.push_back(string("Event cleaning and Trigger"));
-        CutsselecTable.push_back(string("At least 1 Loose Isolated Muon (relIso04$\\leq 0.20$)"));
-        CutsselecTable.push_back(string("At least 1 Loose Electron"));
-        CutsselecTable.push_back(string("At least 1 CSVM Jet"));
-        CutsselecTable.push_back(string("At least 1 extra CSVL Jet"));
-        CutsselecTable.push_back(string("At least 2 extra CSVL Jet"));
-        CutsselecTable.push_back(string("Same Sign Leading Leptons"));
-        }
-    if(!Muon && Electron) {
-        CutsselecTable.push_back(string("initial"));
-        CutsselecTable.push_back(string("Event cleaning and Trigger"));
-        CutsselecTable.push_back(string("Exactly 1 Isolated Electron (PFRelIso03$\\leq 0.15$)"));
+    if(dilepton) {
+        /////////////////////////////////
+        // Selection table: Dilepton + jets
+        /////////////////////////////////
+        if(Muon && !Electron) {
+            CutsselecTable.push_back(string("initial"));
+            CutsselecTable.push_back(string("Event cleaning and Trigger"));
+            CutsselecTable.push_back(string("At least 2 op sign Muons"));
+            CutsselecTable.push_back(string("Muons Isolated (PFRelIso04$\\leq 0.2$)"));
+            CutsselecTable.push_back(string("Highest 2 pT Muon Mass $\\geq 20 GeV$"));
+            CutsselecTable.push_back(string("Z Veto ($m_{Z}\\pm 15 GeV$)"));
+            CutsselecTable.push_back(string("At least 2 Jets"));
+            CutsselecTable.push_back(string("MET $\\geq 40 GeV$"));
+            CutsselecTable.push_back(string("At least 1 CSVL Jet"));
+            CutsselecTable.push_back(string("At least 2 CSVL Jets"));
+            }
+        if(Muon && Electron) {
+            CutsselecTable.push_back(string("initial"));
+            CutsselecTable.push_back(string("Event cleaning and Trigger"));
+            CutsselecTable.push_back(string("At least 1 Loose Isolated Muon (relIso04$\\leq 0.20$)"));
+            CutsselecTable.push_back(string("At least 1 Loose Electron"));
+            CutsselecTable.push_back(string("At least 1 CSVM Jet"));
+            CutsselecTable.push_back(string("At least 1 extra CSVL Jet"));
+            CutsselecTable.push_back(string("At least 2 extra CSVL Jet"));
+            CutsselecTable.push_back(string("Same Sign Leading Leptons"));
+            }
+        if(!Muon && Electron) {
+            CutsselecTable.push_back(string("initial"));
+            CutsselecTable.push_back(string("Event cleaning and Trigger"));
+            CutsselecTable.push_back(string("Exactly 1 Isolated Electron (PFRelIso03$\\leq 0.15$)"));
 //        CutsselecTable.push_back(string("Exactly 2 Loose Electron"));
-        CutsselecTable.push_back(string("At least 2 CSVM Jets"));
-        CutsselecTable.push_back(string("At least 2 Jets"));
-        CutsselecTable.push_back(string("At least 3 Jets"));
-        CutsselecTable.push_back(string("At least 4 Jets"));
+            CutsselecTable.push_back(string("At least 2 CSVM Jets"));
+            CutsselecTable.push_back(string("At least 2 Jets"));
+            CutsselecTable.push_back(string("At least 3 Jets"));
+            CutsselecTable.push_back(string("At least 4 Jets"));
+            }
+        }
+    else {
+        /////////////////////////////////
+        // Selection table: Lepton + jets
+        /////////////////////////////////
+        if(Muon && !Electron) {
+            CutsselecTable.push_back(string("initial"));
+            CutsselecTable.push_back(string("Event cleaning and Trigger"));
+            CutsselecTable.push_back(string("Exactly 1 Isolated Muon (relIso04$\\leq 0.12$)"));
+            CutsselecTable.push_back(string("Loose Muon Veto"));
+            CutsselecTable.push_back(string("Electron Veto"));
+            CutsselecTable.push_back(string("At least 1 Jet"));
+            CutsselecTable.push_back(string("At least 2 Jets"));
+            CutsselecTable.push_back(string("At least 3 Jets"));
+            CutsselecTable.push_back(string("At least 4 Jets"));
+            CutsselecTable.push_back(string("At least 1 CSVM Jet"));
+            }
+        if(!Muon && Electron) {
+            CutsselecTable.push_back(string("initial"));
+            CutsselecTable.push_back(string("Event cleaning and Trigger"));
+            CutsselecTable.push_back(string("Exactly 1 Isolated Electron"));
+            CutsselecTable.push_back(string("Loose Electron Veto"));
+            CutsselecTable.push_back(string("Loose Muon Veto"));
+            CutsselecTable.push_back(string("At least 1 Jet"));
+            CutsselecTable.push_back(string("At least 2 Jets"));
+            CutsselecTable.push_back(string("At least 3 Jets"));
+            CutsselecTable.push_back(string("At least 4 Jets"));
+            CutsselecTable.push_back(string("At least 1 CSVM Jet"));
+            }
         }
 
     SelectionTable selecTable(CutsselecTable, datasets);
@@ -489,6 +575,10 @@ int main (int argc, char *argv[]) {
         string previousFilename = "";
         int iFile = -1;
         dataSetName = datasets[d]->Name();
+        if(datasets[d]->Name()=="TTJetsPU20bx25") bx25 = true;
+        if(datasets[d]->Name()=="TTJetsPU40bx50") bx25 = false;
+        if(bx25) cout << "Dataset with 25ns Bunch Spacing!" <<endl;
+        else cout << "Dataset with 50ns Bunch Spacing!" <<endl;
 
         //////////////////////////////////////////////////
         // Initialize JEC factors ///////////////////////
@@ -542,17 +632,15 @@ int main (int argc, char *argv[]) {
 
         //define object containers
         vector<TRootElectron*> selectedElectrons;
-        vector<TRootJet*>      selectedJets;
+        vector<TRootPFJet*>    selectedJets, selectedLoosePtJets, selectedLooseEtaJets;
         vector<TRootMuon*>     selectedMuons;
-        vector<TRootMuon*>     selectedLooseMuons;
-        vector<TRootElectron*> selectedLooseElectrons;
+        vector<TRootMuon*>     selectedLooseIsoMuons, selectedLoosePtMuons, selectedLooseEtaMuons;
+        vector<TRootElectron*> selectedLooseIsoElectrons, selectedLoosePtElectrons, selectedLooseEtaElectrons;
         vector<TRootElectron*> selectedExtraElectrons;
         vector<TRootMuon*>     selectedMuons_NoIso;
         vector<TRootMuon*>     selectedExtraMuons;
         selectedElectrons.reserve(10);
         selectedMuons.reserve(10);
-        selectedLooseMuons.reserve(10);
-        selectedLooseElectrons.reserve(10);
 
         //////////////////////////////////////
         // Begin Event Loop
@@ -565,14 +653,15 @@ int main (int argc, char *argv[]) {
             currentfrac = ievt_d/end_d;
             if (debug)cout <<"event loop 1"<<endl;
 
-            if(ievt%1000 == 0)
+            if(ievt%1000 == 0) {
                 std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(end-start)<<"%)"<<flush<<"\r"<<endl;
+                }
 
             float scaleFactor = 1.;  // scale factor for the event
             event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, mets, debug);  //load event
             if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
 
-            float rho = event->kt6PFJets_rho();
+            float rho = event->fixedGridRhoFastjetAll();
             string graphName;
 
             /////////////////////////
@@ -580,10 +669,10 @@ int main (int argc, char *argv[]) {
             /////////////////////////
 
             vector<TRootGenJet*> genjets;
-            if( ! (dataSetName == "Data" || dataSetName == "data" || dataSetName == "DATA" ) ) {
-                // loading GenJets as I need them for JER
-                genjets = treeLoader.LoadGenJet(ievt);
-                }
+//            if( ! (dataSetName == "Data" || dataSetName == "data" || dataSetName == "DATA" ) ) {
+//                // loading GenJets as I need them for JER
+//                genjets = treeLoader.LoadGenJet(ievt);
+//                }
             // check which file in the dataset it is to have the HLTInfo right
             string currentFilename = datasets[d]->eventTree()->GetFile()->GetName();
             if(previousFilename != currentFilename) {
@@ -726,29 +815,30 @@ int main (int argc, char *argv[]) {
 
             ////////////////////////////////////////
             // Beam scraping and PU reweighting
+            // Turned off on Aug 11, 2014 by JH for CSA14 studies
             ////////////////////////////////////////
 
             // scale factor for the event
             //float scaleFactor = 1.;
 
-            if(dataSetName == "Data" || dataSetName == "data" || dataSetName == "DATA") {
-                // Apply the scraping veto. (Is it still needed?)
-                bool isBeamBG = true;
-                if(event->nTracks() > 10) {
-                    if( ( (float) event->nHighPurityTracks() ) / ( (float) event->nTracks() ) > 0.25 )
-                        isBeamBG = false;
-                    }
-                if(isBeamBG) continue;
-                }
-            else {
-                double lumiWeight = LumiWeights.ITweight( (int)event->nTruePU() );
-                double lumiWeightOLD=lumiWeight;
-                if(dataSetName.find("Data") == 0 || dataSetName.find("data") == 0 || dataSetName.find("DATA") == 0) {
-                    lumiWeight=1;
-                    }
-                scaleFactor = scaleFactor*lumiWeight;
-
-                }
+//            if(dataSetName == "Data" || dataSetName == "data" || dataSetName == "DATA") {
+//                // Apply the scraping veto. (Is it still needed?)
+//                bool isBeamBG = true;
+//                if(event->nTracks() > 10) {
+//                    if( ( (float) event->nHighPurityTracks() ) / ( (float) event->nTracks() ) > 0.25 )
+//                        isBeamBG = false;
+//                    }
+//                if(isBeamBG) continue;
+//                }
+//            else {
+//                double lumiWeight = LumiWeights.ITweight( (int)event->nTruePU() );
+//                double lumiWeightOLD=lumiWeight;
+//                if(dataSetName.find("Data") == 0 || dataSetName.find("data") == 0 || dataSetName.find("DATA") == 0) {
+//                    lumiWeight=1;
+//                    }
+//                scaleFactor = scaleFactor*lumiWeight;
+//
+//                }
 
             ///////////////////////////////////////////////////////////
             // Event selection
@@ -786,34 +876,101 @@ int main (int argc, char *argv[]) {
                     }
                 }
             // Define object selection cuts
-            if(datasets[d]->Name()=="TTJets_LooseSel") {
-                selection.setJetCuts(10,3,0.01,1,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
-                selection.setElectronCuts(10,2.5,.2,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
-                selection.setMuonCuts(15, 2.1, 0.2, 0.02, 0.3, -10000, 0.5, 5, 0);
+            if(Muon && !Electron) { //Muon Channel Cuts
+                if(dilepton) { //Dilepton Cuts
+                    selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                    selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                    selection.setMuonCuts(20, 2.4, 0.20, 1, 0.3, 1, 1, 0, 0);
+
+                    if (debug)cout<<"Getting Jets"<<endl;
+                    selectedJets                                        = selection.GetSelectedPFJets(true); // ApplyJetId
+                    selectedLoosePtJets                                 = selection.GetSelectedPFJets(0, 2.5, true);
+                    selectedLooseEtaJets                                = selection.GetSelectedPFJets(30, 5, true);
+                    if (debug)cout<<"Getting Tight Muons"<<endl;
+                    selectedMuons                                       = selection.GetSelectedMuons();
+                    selectedLoosePtMuons                                = selection.GetSelectedMuons(0, 2.4, 0.2);
+                    selectedLooseEtaMuons                               = selection.GetSelectedMuons(20, 5, 0.2);
+                    selectedLooseIsoMuons                               = selection.GetSelectedMuons(20, 2.4, 1);
+                    if (debug)cout<<"Getting Loose Electrons"<<endl;
+                    selectedElectrons                                   = selection.GetSelectedElectrons(20,2.5,0.15); // VBTF ID
+                    selectedLoosePtElectrons                            = selection.GetSelectedElectrons(0, 2.5, 0.15);
+                    selectedLooseEtaElectrons                           = selection.GetSelectedElectrons(20, 5, 0.15);
+                    selectedLooseIsoElectrons                           = selection.GetSelectedElectrons(20, 2.5, 1);
+                    }
+                else {  //Semi-Leptonic Cuts
+                    selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                    selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                    selection.setMuonCuts(26, 2.1, 0.12, 0.02, 0.3, 1, 0.5, 5, 0);
+
+                    if (debug)cout<<"Getting Jets"<<endl;
+                    selectedJets                                        = selection.GetSelectedPFJets(true); // ApplyJetId
+                    selectedLoosePtJets                                 = selection.GetSelectedPFJets(0, 2.5, true);
+                    selectedLooseEtaJets                                = selection.GetSelectedPFJets(30, 5, true);
+                    if (debug)cout<<"Getting Tight Muons"<<endl;
+                    selectedMuons                                       = selection.GetSelectedMuons();
+                    selectedLoosePtMuons                                = selection.GetSelectedMuons(0, 2.1, 0.12);
+                    selectedLooseEtaMuons                               = selection.GetSelectedMuons(26, 5, 0.12);
+                    selectedLooseIsoMuons                               = selection.GetSelectedMuons(26, 2.1, 1);
+//                selection.setMuonCuts(10, 2.5, 0.20, 1, 0.3, -10000, 1, 0, 0);
+                    selectedExtraMuons                                  =selection.GetSelectedMuons(10, 2.5, 0.20);
+                    if (debug)cout<<"Getting Loose Electrons"<<endl;
+                    selectedElectrons                                   = selection.GetSelectedElectrons(20,2.5,0.15, false, bx25, false); // VBTF ID
+                    selectedLoosePtElectrons                            = selection.GetSelectedElectrons(0, 2.5, 0.15, false, bx25, false);
+                    selectedLooseEtaElectrons                           = selection.GetSelectedElectrons(20, 5, 0.15, false, bx25, false);
+                    selectedLooseIsoElectrons                           = selection.GetSelectedElectrons(20, 2.5, 1), false, bx25, false;
+                    }
                 }
-            else {
-                selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
-                selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
-                selection.setMuonCuts(26, 2.1, 0.12, 0.02, 0.3, -10000, 0.5, 5, 0);
+
+                if(!Muon && Electron) { //Electron Channel Cuts
+                if(dilepton) { //Dilepton Cuts
+                    selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                    selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                    selection.setMuonCuts(20, 2.4, 0.20, 1, 0.3, 1, 1, 0, 0);
+
+                    if (debug)cout<<"Getting Jets"<<endl;
+                    selectedJets                                        = selection.GetSelectedPFJets(true); // ApplyJetId
+                    selectedLoosePtJets                                 = selection.GetSelectedPFJets(0, 2.5, true);
+                    selectedLooseEtaJets                                = selection.GetSelectedPFJets(30, 5, true);
+                    if (debug)cout<<"Getting Tight Muons"<<endl;
+                    selectedMuons                                       = selection.GetSelectedMuons();
+                    selectedLoosePtMuons                                = selection.GetSelectedMuons(0, 2.4, 0.2);
+                    selectedLooseEtaMuons                               = selection.GetSelectedMuons(20, 5, 0.2);
+                    selectedLooseIsoMuons                               = selection.GetSelectedMuons(20, 2.4, 1);
+                    if (debug)cout<<"Getting Loose Electrons"<<endl;
+                    selectedElectrons                                   = selection.GetSelectedElectrons(20,2.5,0.15); // VBTF ID
+                    selectedLoosePtElectrons                            = selection.GetSelectedElectrons(0, 2.5, 0.15);
+                    selectedLooseEtaElectrons                           = selection.GetSelectedElectrons(20, 5, 0.15);
+                    selectedLooseIsoElectrons                           = selection.GetSelectedElectrons(20, 2.5, 1);
+                    }
+                else {  //Semi-Leptonic Cuts
+                    selection.setJetCuts(30.,2.5,0.01,1.,0.98,0,0); //Pt, Eta, EMF, n90Hits, fHPD, dRJetElectron, DRJets
+                    selection.setElectronCuts(20,2.5,.15,0.04,.5,1,0); //Pt,Eta,RelIso,d0,MVAId,DistVzPVz, DRJets, MaxMissingHits
+                    selection.setMuonCuts(26, 2.1, 0.12, 0.02, 0.3, 1, 0.5, 5, 0);
+
+                    if (debug)cout<<"Getting Jets"<<endl;
+                    selectedJets                                        = selection.GetSelectedPFJets(true); // ApplyJetId
+                    selectedLoosePtJets                                 = selection.GetSelectedPFJets(0, 2.5, true);
+                    selectedLooseEtaJets                                = selection.GetSelectedPFJets(30, 5, true);
+                    if (debug)cout<<"Getting Tight Muons"<<endl;
+                    selectedMuons                                       = selection.GetSelectedMuons(20, 2.5, 0.2);
+                    selectedLoosePtMuons                                = selection.GetSelectedMuons(0, 2.5, 0.2);
+                    selectedLooseEtaMuons                               = selection.GetSelectedMuons(20, 5, 0.2);
+                    selectedLooseIsoMuons                               = selection.GetSelectedMuons(20, 2.5, 1);
+//                selection.setMuonCuts(10, 2.5, 0.20, 1, 0.3, -10000, 1, 0, 0);
+                    selectedExtraMuons                                  =selection.GetSelectedMuons(10, 2.5, 0.20);
+                    if (debug)cout<<"Getting Loose Electrons"<<endl;
+                    selectedElectrons                                   = selection.GetSelectedElectrons(30,2.5,0.15, false, bx25, false); // Cut Based ID for CSA14
+                    selectedExtraElectrons                              = selection.GetSelectedElectrons(20,2.5,0.15, false, bx25, false);
+                    selectedLoosePtElectrons                            = selection.GetSelectedElectrons(0, 2.5, 0.15, false, bx25, false);
+                    selectedLooseEtaElectrons                           = selection.GetSelectedElectrons(30, 5, 0.15, false, bx25, false);
+                    selectedLooseIsoElectrons                           = selection.GetSelectedElectrons(30, 2.5, 1), false, bx25, false;
+                    }
                 }
 
 
 
 
-            if (debug)cout<<"Getting Jets"<<endl;
-            selectedJets                                        = selection.GetSelectedJets(true); // ApplyJetId
-            vector<TRootJet*> selectedLoosePtJets               = selection.GetSelectedJets(0, 2.5, true);
-            vector<TRootJet*> selectedLooseEtaJets              = selection.GetSelectedJets(30, 5, true);
-            if (debug)cout<<"Getting Tight Muons"<<endl;
-            selectedMuons                                       = selection.GetSelectedMuons();
-            vector<TRootMuon*> selectedLoosePtMuons             = selection.GetSelectedMuons(0, 2.1, 0.12);
-            vector<TRootMuon*> selectedLooseEtaMuons            = selection.GetSelectedMuons(26, 5, 0.12);
-            vector<TRootMuon*> selectedLooseIsoMuons            = selection.GetSelectedMuons(26, 2.1, 0.5);
-            if (debug)cout<<"Getting Loose Electrons"<<endl;
-            selectedElectrons   = selection.GetSelectedElectrons(); // VBTF ID
-            vector<TRootElectron*> selectedLoosePtElectrons     = selection.GetSelectedElectrons(0, 2.5, 0.15);
-            vector<TRootElectron*> selectedLooseEtaElectrons    = selection.GetSelectedElectrons(20, 5, 0.15);
-            vector<TRootElectron*> selectedLooseIsoElectrons    = selection.GetSelectedElectrons(20, 2.5, 0.5);
+
 
             vector<TRootJet*>      selectedMBJets;
             vector<TRootJet*>      selectedLBJets;
@@ -829,18 +986,58 @@ int main (int argc, char *argv[]) {
             // This is done here for muon isolation selection         //
             ////////////////////////////////////////////////////////////
 
-            double dR = 0, dPhi = 0, dEta = 0, lepSq = 0, projSq = 0, jetSq = 0, diMuMass = 0;
-            double dRTemp = 0, pTRelTemp = 0;
+            double dR = 0, dPhi = 0, dEta = 0, lepSq = 0, projSq = 0, jetSq = 0, diMuMass = 0, looseIsoDiMuMass = 0, deltaBeta = 0;
+            double dRTemp = 0, pTRelTemp = 0, sumpTTemp = 0, sumpT=0, NE = 0, CE = 0, PUCE = 0;
             float pairCharge = -9999, totalCharge = 0;
             vector<double>  MuondRMin;
             vector<double>  MuonPTRel;
-            int jetPosMin = 0, nIsoMu = 0;
+            int jetPosMin = 0, nIsoMu = 0, muPos1 = 0, muPos2 = 0;
+            bool pairFlag = false, looseIsoPairFlag = false;
 
-            vector<TLorentzVector> selectedMuonsTLV_JC, selectedElectronsTLV_JC;
+            vector<TLorentzVector> selectedMuonsTLV_JC, selectedElectronsTLV_JC, selectedLooseIsoMuonsTLV;
             vector<TLorentzVector> mcParticlesTLV, selectedJetsTLV, mcMuonsTLV;
             vector<TRootMCParticle*> mcParticlesMatching_;
             vector<int> mcMuonIndex;
             JetPartonMatching muonMatching;
+
+            for (Int_t selmu =0; selmu < selectedLooseIsoMuons.size(); selmu++ ) {
+                NE = selectedLooseIsoMuons[selmu]->neutralHadronIso(4)+selectedLooseIsoMuons[selmu]->photonIso(4);
+                CE = selectedLooseIsoMuons[selmu]->chargedHadronIso(4);
+                PUCE = selectedLooseIsoMuons[selmu]->puChargedHadronIso(4);
+                if(pow(NE,2) >= (4*PUCE*CE)) {
+                    double discrim = pow(NE,2) - (4*PUCE*CE);
+                    if(sqrt(discrim) >= NE) {
+                        deltaBeta = (sqrt(discrim) - NE)/(2*PUCE);
+                        }
+                    else {
+                        deltaBeta = -1;
+                        }
+                    }
+                else {
+                    deltaBeta = -1;
+                    }
+                MSPlot["MuonBeta"]->Fill(deltaBeta, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelNHI4PreSel"]->Fill((selectedLooseIsoMuons[selmu]->neutralHadronIso(4)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelCHI4PreSel"]->Fill((CE/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelPhI4PreSel"]->Fill((selectedLooseIsoMuons[selmu]->photonIso(4)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelPUCHI4PreSel"]->Fill((PUCE/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIsoPreSel"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelTotN4PreSel"]->Fill((NE/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso0"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.0), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso1"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.1), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso2"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.2), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso3"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.3), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso4"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.4), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso5"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso6"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.6), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso7"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.7), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso8"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.8), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso9"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.9), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIso10"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 1.0), datasets[d], true, Luminosity*scaleFactor);
+
+                MSPlot["MuonRelNminusPUCH"]->Fill(((NE-PUCE)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelNminusBPUCH"]->Fill(((NE-0.5*PUCE)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
+                }
 
             for (Int_t selmu =0; selmu < selectedMuons.size(); selmu++ ) {
                 MuondRMin.push_back(99999);
@@ -857,24 +1054,45 @@ int main (int argc, char *argv[]) {
                 jetSq = pow(selectedJets[jetPosMin]->Px(),2) + pow(selectedJets[jetPosMin]->Py(),2) + pow(selectedJets[jetPosMin]->Pz(),2); //square of jet momentum
                 pTRelTemp = sqrt( lepSq - (projSq/jetSq) );
                 MuonPTRel.push_back(pTRelTemp);
+                for (Int_t selmu1 =0; selmu1 < selectedMuons.size(); selmu1++ ) {
+                    if(selectedMuons[selmu]->charge() != selectedMuons[selmu1]->charge()) {
+                        sumpTTemp = selectedMuons[selmu]->Pt() + selectedMuons[selmu1]->Pt();
+                        pairFlag = true;
+                        if(sumpTTemp > sumpT) {
+                            sumpT = sumpTTemp;
+                            muPos1 = selmu;
+                            muPos2 = selmu1;
+                            }
+                        }
+                    }
                 }
-            if(selectedMuons.size() >=2) {
-                TLorentzVector diMuon = selectedMuonsTLV_JC[0] + selectedMuonsTLV_JC[1];
+            for (Int_t selmu =0; selmu < selectedLooseIsoMuons.size(); selmu++ ) {
+                selectedLooseIsoMuonsTLV.push_back(*selectedLooseIsoMuons[selmu]);
+                for (Int_t selmu1 =0; selmu1 < selectedLooseIsoMuons.size(); selmu1++ ) {
+                    if(selectedLooseIsoMuons[selmu]->charge() != selectedLooseIsoMuons[selmu1]->charge()) {
+                        looseIsoPairFlag = true;
+                        }
+                    }
+                }
+            if(selectedMuons.size() >=2 && pairFlag) {
+                TLorentzVector diMuon = selectedMuonsTLV_JC[muPos1] + selectedMuonsTLV_JC[muPos2];
                 diMuMass = diMuon.M();
                 }
 
+
             int JetCut =0;
-            int nMu, nEl;
+            int nMu, nEl, nLooseIsoMu;
             if(Muon && !Electron) {
                 nMu = selectedMuons.size(); //Number of Muons in Event
                 nEl = selectedElectrons.size(); //Number of Electrons in Event
+                nLooseIsoMu = selectedLooseIsoMuons.size();
                 }
             if(Muon && Electron) {
                 nMu = selectedMuons.size(); //Number of Muons in Event
                 nEl = selectedElectrons.size(); //Number of Electrons in Event
                 }
             if(!Muon && Electron) {
-                nMu = selectedMuons.size(); //Number of Muons in Event
+                nMu = selectedExtraMuons.size(); //Number of Muons in Event
                 nEl = selectedElectrons.size(); //Number of Electrons in Event
                 }
 
@@ -905,7 +1123,16 @@ int main (int argc, char *argv[]) {
             double HTRat = 0.;
             double HT_leading = 0.;
             double HT_lagging = 0.;
+            double sumCH = 0, sumNeu = 0, JERatio = 0., JMR = 0.;
             for (Int_t seljet0 =0; seljet0 < selectedJets.size(); seljet0++ ) {
+                sumCH = selectedJets[seljet0]->chargedHadronEnergyFraction() + selectedJets[seljet0]->chargedEmEnergyFraction();
+                sumNeu = selectedJets[seljet0]->neutralHadronEnergyFraction() + selectedJets[seljet0]->neutralEmEnergyFraction();
+                JERatio = sumCH/sumNeu;
+                JMR = selectedJets[seljet0]->chargedMultiplicity()/selectedJets[seljet0]->neutralMultiplicity();
+                MSPlot["JetCEF"]->Fill(sumCH, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["JetNEF"]->Fill(sumNeu, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["JetEnergyRatio"]->Fill(JERatio, datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["JetMultiplicityRatio"]->Fill(JMR, datasets[d], true, Luminosity*scaleFactor);
                 temp_HT += selectedJets[seljet0]->Pt();
                 if (seljet0 < 4) { //Defines the leading Jets and the first 4
                     HT_leading += selectedJets[seljet0]->Pt();
@@ -930,23 +1157,28 @@ int main (int argc, char *argv[]) {
             if (debug)	cout <<"PrimaryVertexBit: " << isGoodPV << " TriggerBit: " << trigged <<endl;
             if (debug) cin.get();
             selecTable.Fill(d,0,1);
-            if(Muon && !Electron) { //Di-Muon Selection Table
+            if(Muon && !Electron && dilepton) { //Di-Muon Selection Table
                 if(isGoodPV && trigged) {
                     selecTable.Fill(d,1,1);
-                    if (nMu==1 ) {
+                    if (nLooseIsoMu>=2 && looseIsoPairFlag) {
                         selecTable.Fill(d,2,1);
-                        if(nMtags>=2) {
-                            selecTable.Fill(d,4,1);
-//                                if(nLtags>=2) {
-//                                    selecTable.Fill(d,5,1);
-//                                    if(nLtags>=3) {
-//                                        selecTable.Fill(d,6,1);
-                            if(nJets>=2) {
+                        if (nMu>=2 && pairFlag) {
+                            selecTable.Fill(d,3,1);
+                            if(diMuMass>=20) {
                                 selecTable.Fill(d,4,1);
-                                if(nJets>=3) {
+                                if(diMuMass>=106 || diMuMass<=76) {
                                     selecTable.Fill(d,5,1);
-                                    if(nJets>=4) {
+                                    if(nJets>=2) {
                                         selecTable.Fill(d,6,1);
+                                        if(mets[0]->Et()>=40) {
+                                            selecTable.Fill(d,7,1);
+                                            if(nLtags>=1) {
+                                                selecTable.Fill(d,8,1);
+                                                if(nLtags>=2) {
+                                                    selecTable.Fill(d,9,1);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -954,7 +1186,7 @@ int main (int argc, char *argv[]) {
                         }
                     }
                 }
-            if(Muon && Electron) { //Muon-Electron Selection Table
+            if(Muon && Electron && dilepton) { //Muon-Electron Selection Table
                 if(isGoodPV && trigged) {
                     selecTable.Fill(d,1,1);
                     if (nMu>=1) {
@@ -974,7 +1206,7 @@ int main (int argc, char *argv[]) {
                         }
                     }
                 }
-            if(!Muon && Electron) { //Di-Electron Selection Table
+            if(!Muon && Electron && dilepton) { //Di-Electron Selection Table
                 if(isGoodPV && trigged) {
                     selecTable.Fill(d,1,1);
                     if (nEl==1) {
@@ -994,9 +1226,71 @@ int main (int argc, char *argv[]) {
                         }
                     }
                 }
+            if(Muon && !Electron && !dilepton) { //Single Muon Selection Table
+                if(isGoodPV && trigged) {
+                    selecTable.Fill(d,1,1);
+                    if (nMu==1 ) {
+                        selecTable.Fill(d,2,1);
+                        if (selectedExtraMuons.size() == 1) {
+                            selecTable.Fill(d,3,1);
+                            if(nEl == 0) {
+                                selecTable.Fill(d,4,1);
+                                if(nJets>=1) {
+                                    selecTable.Fill(d,5,1);
+                                    if(nJets>=2) {
+                                        selecTable.Fill(d,6,1);
+                                        if(nJets>=3) {
+                                            selecTable.Fill(d,7,1);
+                                            if(nJets>=4) {
+                                                selecTable.Fill(d,8,1);
+                                                if(nMtags>=1) {
+                                                    selecTable.Fill(d,9,1);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if(!Muon && Electron && !dilepton) { //Single Electron Selection Table
+                if(isGoodPV && trigged) {
+                    selecTable.Fill(d,1,1);
+                    if (nEl==1 ) {
+                        selecTable.Fill(d,2,1);
+                        if (selectedExtraElectrons.size() == 1) {
+                            selecTable.Fill(d,3,1);
+                            if(nMu == 0) {
+                                selecTable.Fill(d,4,1);
+                                if(nJets>=1) {
+                                    selecTable.Fill(d,5,1);
+                                    if(nJets>=2) {
+                                        selecTable.Fill(d,6,1);
+                                        if(nJets>=3) {
+                                            selecTable.Fill(d,7,1);
+                                            if(nJets>=4) {
+                                                selecTable.Fill(d,8,1);
+                                                if(nMtags>=1) {
+                                                    selecTable.Fill(d,9,1);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             /////////////////////////////////
             // Applying baseline selection //
             /////////////////////////////////
+
+            //Filling Histogram of the number of vertices before Event Selection
+            MSPlot["NbOfVerticesPreSel"]->Fill(vertex.size(), datasets[d], true, Luminosity*scaleFactor);
+
 //            if (!trigged) continue;  // Redunant check that an HLT was triggered
             if (!isGoodPV) continue; // Check that there is a good Primary Vertex
 ////            if (!(selectedJets.size() >= 6)) continue; //Selection of a minimum of 6 Jets in Event
@@ -1015,7 +1309,7 @@ int main (int argc, char *argv[]) {
                 MSPlot["MuonLooseEta"]->Fill(selectedLooseEtaMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
                 }
             for (Int_t selmu =0; selmu < selectedLooseIsoMuons.size(); selmu++ ) {
-                MSPlot["MuonLooseIso"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonLooseIso"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
                 }
 
             for (Int_t selel =0; selel < selectedLoosePtElectrons.size(); selel++ ) {
@@ -1035,18 +1329,40 @@ int main (int argc, char *argv[]) {
                 MSPlot["JetLooseEta"]->Fill(selectedLooseEtaJets[seljet]->Eta(), datasets[d], true, Luminosity*scaleFactor);
                 }
 
+            //Preselection Plots
+            for (Int_t selmu =0; selmu < selectedMuons.size(); selmu++ ) {
+                MSPlot["MuonPtPreSel"]->Fill(selectedMuons[selmu]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonRelIsolationPreSel"]->Fill(selectedMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["MuonEtaPreSel"]->Fill(selectedMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
+                }
+            for (Int_t selel =0; selel < selectedElectrons.size(); selel++ ) {
+                MSPlot["ElectronPtPreSel"]->Fill(selectedElectrons[selel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["ElectronRelIsolationPreSel"]->Fill(selectedElectrons[selel]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["ElectronEtaPreSel"]->Fill(selectedElectrons[selel]->Eta(), datasets[d], true, Luminosity*scaleFactor);
+                }
+            for (Int_t seljet =0; seljet < selectedJets.size(); seljet++ ) {
+                MSPlot["SelectedJetPtPreSel"]->Fill(selectedJets[seljet]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                MSPlot["JetEtaPreSel"]->Fill(selectedJets[seljet]->Eta(), datasets[d], true, Luminosity*scaleFactor);
+                }
+
             int nTightLeptons, nVetoLeptonsSF, nVetoLeptonsOF;
             if (debug)	cout <<" applying baseline event selection..."<<endl;
             //Apply the lepton, btag and HT selections
-            if (Muon && !Electron) {
+            if (Muon && !Electron && dilepton) {
                 MSPlot["NbOfMuonsPreSel"]->Fill(nMu, datasets[d], true, Luminosity*scaleFactor);
-                if  (  !( nMu == 1) ) continue; // single-Muon Channel Selection
+                if  (  !( nMu >= 2) ) continue; // Di-Muon Channel Selection
                 }
 //            else if (Muon && Electron) {
 //                if  (  !( nMu >= 1 && nEl >= 1 )) continue; // Muon-Electron Channel Selection
 //                }
-            else if (!Muon && Electron) {
+            else if (!Muon && Electron && dilepton) {
                 if  (  !( nEl == 1 )) continue; // Di-Electron Channel Selection
+                }
+            else if (Muon && !Electron && !dilepton) {
+                if ( !( nMu ==1 && selectedExtraMuons.size() == 1 && nEl == 0) ) continue;  //Single Muon Selection
+                }
+                else if (!Muon && Electron && !dilepton) {
+                if ( !( nEl ==1 && selectedExtraElectrons.size() == 1 && nMu == 0) ) continue;  //Single Electron Selection
                 }
             else {
                 cerr<<"Correct Channel not selected."<<endl;
@@ -1065,9 +1381,12 @@ int main (int argc, char *argv[]) {
                 MSPlot["HExcess2M"]->Fill(H, datasets[d], true, Luminosity*scaleFactor);
                 }
 
-
-            if (!(nMtags>=2)) continue; //Jet Tag Event Selection Requirements
-            if (!(nJets>=4)) continue; //Jet Tag Event Selection Requirements
+            if (dilepton) {
+                if (!(nLtags>=2 && nJets>=2 && diMuMass >= 20 && (diMuMass>=106 || diMuMass<=76) && mets[0]->Et()>=40 )) continue; //Jet Tag Event Selection Requirements for dilepton
+                }
+            else {
+                if (!(nMtags>=1 && nJets>=4 )) continue; //Jet Tag Event Selection Requirements for single lepton
+                }
             if(debug) {
                 cout<<"Selection Passed."<<endl;
                 cin.get();
@@ -1215,6 +1534,9 @@ int main (int argc, char *argv[]) {
                 MSPlot["MuonTrackerLayersWithMeasurement"]->Fill(selectedMuons[selmu]->nofTrackerLayersWithMeasurement(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonDRMin"]->Fill(MuondRMin[selmu], datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonRelIsolation"]->Fill(reliso, datasets[d], true, Luminosity*scaleFactor);
+//                if(reliso == 0) cout << "Zero Muon pfRelIso.  Components: " << "nHadIso: " << selectedMuons[selmu]->neutralHadronIso(4) << " phoIso: " << selectedMuons[selmu]->photonIso(4) << " PuChHadIso: " << selectedMuons[selmu]->puChargedHadronIso(4) << " chHadIso: " << selectedMuons[selmu]->chargedHadronIso(4) << endl;
+//                if(selectedMuons[selmu]->chargedHadronIso(4) == 0) cout << "Zero Muon CHIso. nHadIso: " << selectedMuons[selmu]->neutralHadronIso(4) << " phoIso: " << selectedMuons[selmu]->photonIso(4) << " PuChHadIso: " << selectedMuons[selmu]->puChargedHadronIso(4) << " pfRelIso: " << reliso << endl;
+
                 }
 
             if(Muon && !Electron) {
@@ -1226,6 +1548,8 @@ int main (int argc, char *argv[]) {
                         }
                     }
                 muonMatching = JetPartonMatching(selectedMuonsTLV_JC, mcMuonsTLV, 2, true, true, 0.3);
+
+                MSPlot["NbOfGenMuons"]->Fill(mcMuonsTLV.size(), datasets[d], true, Luminosity*scaleFactor);
 
                 for(unsigned int i=0; i<selectedMuonsTLV_JC.size(); i++) {
                     int matchedMuonNumber = muonMatching.getMatchForParton(i, 0); //Gives the index of mcMuonsTLV where the match is
@@ -1268,6 +1592,19 @@ int main (int argc, char *argv[]) {
                             MSPlot["OpSignMuonGrannyType"]->Fill(-1, datasets[d], true, Luminosity*scaleFactor);
                             }
                         }
+
+                    if(matchedMuonNumber >=0) {
+                        MSPlot["MuonType"]->Fill(abs(mcParticlesMatching_[mcMuonIndex[matchedMuonNumber]]->type()), datasets[d], true, Luminosity*scaleFactor);
+                        int motherType = abs(mcParticlesMatching_[mcMuonIndex[matchedMuonNumber]]->motherType());
+                        if(motherType<25) MSPlot["MuonParentType"]->Fill(motherType, datasets[d], true, Luminosity*scaleFactor);
+                        else MSPlot["MuonParentType"]->Fill(-1, datasets[d], true, Luminosity*scaleFactor);
+                        int grannyType = abs(mcParticlesMatching_[mcMuonIndex[matchedMuonNumber]]->grannyType());
+                        if(grannyType<25) MSPlot["MuonGrannyType"]->Fill(grannyType, datasets[d], true, Luminosity*scaleFactor);
+                        else MSPlot["MuonGrannyType"]->Fill(-1, datasets[d], true, Luminosity*scaleFactor);
+                        }
+                    else {
+                        MSPlot["MuonType"]->Fill(-1, datasets[d], true, Luminosity*scaleFactor);
+                        }
                     }
                 }
 
@@ -1290,7 +1627,7 @@ int main (int argc, char *argv[]) {
 
             MSPlot["NbOfIsolatedElectrons"]->Fill(selectedElectrons.size(), datasets[d], true, Luminosity*scaleFactor);
             for (Int_t selel =0; selel < selectedElectrons.size(); selel++ ) {
-                float reliso = selectedElectrons[selel]->relPfIso(3, 0);
+                float reliso = selectedElectrons[selel]->relPfIso(3, 0.5);
                 double elzPVz = fabs(selectedElectrons[selel]->vz() - vertex[0]->Z());
                 selectedElectronsTLV_JC.push_back(*selectedElectrons[selel]);
                 MSPlot["Electrondz"]->Fill(selectedElectrons[selel]->dz() , datasets[d], true, Luminosity*scaleFactor );
@@ -1478,6 +1815,9 @@ int Factorial(int N = 1) {
         fact = fact * i;  // OR fact *= i;
     return fact;
     }
+
+
+
 
 
 
