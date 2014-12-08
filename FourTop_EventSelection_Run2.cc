@@ -100,7 +100,7 @@ struct HighestCVSBtag
 {
     bool operator()( TRootJet* j1, TRootJet* j2 ) const
     {
-        return j1->btag_combinedSecondaryVertexBJetTags() > j2->btag_combinedInclusiveSecondaryVertexV2BJetTags();
+        return j1->btag_combinedInclusiveSecondaryVertexV2BJetTags() > j2->btag_combinedInclusiveSecondaryVertexV2BJetTags();
     }
 };
 
@@ -117,6 +117,9 @@ int main (int argc, char *argv[])
 
     int passed = 0;
     int ndefs =0;
+    int negWeights = 0;
+    float weightCount = 0.0;
+    int eventCount = 0;
 
     string btagger = "CSVM";
     float scalefactorbtageff, mistagfactor;
@@ -319,10 +322,13 @@ int main (int argc, char *argv[])
     MSPlot["NbOfMuonsPreSel"]                               = new MultiSamplePlot(datasets, "NbOfMuonsPreSel", 5, 0, 5, "Nb. of muons");
     MSPlot["NbOfMuonsPostSel"]                              = new MultiSamplePlot(datasets, "NbOfMuonsPostSel", 5, 0, 5, "Nb. of muons");
     MSPlot["MuonDRMin"]                                     = new MultiSamplePlot(datasets, "MuonDRMin", 40, 0, 4, "dR_{min}");
+    MSPlot["LeadingMuonDRMin"]                              = new MultiSamplePlot(datasets, "LeadingMuonDRMin", 40, 0, 4, "dR_{min}");
     MSPlot["IsolatedMuonDRMin"]                             = new MultiSamplePlot(datasets, "IsolatedMuonDRMin", 40, 0, 4, "dR_{min}");
     MSPlot["MuonRelIsolation"]                              = new MultiSamplePlot(datasets, "MuonRelIsolation", 10, 0, .25, "RelIso");
     MSPlot["MuonPt"]                                        = new MultiSamplePlot(datasets, "MuonPt", 30, 0, 300, "PT_{#mu}");
-    MSPlot["MuonPtRel"]                                     = new MultiSamplePlot(datasets, "MuonPtRel", 30, 0, 300, "PT_{#mu}");
+    MSPlot["LeadingMuonPt"]                                 = new MultiSamplePlot(datasets, "LeadingMuonPt", 30, 0, 300, "PT_{#mu}");
+    MSPlot["MuonPtRel"]                                     = new MultiSamplePlot(datasets, "MuonPtRel", 30, 0, 300, "PT^{rel}_{#mu}");
+    MSPlot["LeadingMuonPtRel"]                              = new MultiSamplePlot(datasets, "LeadingMuonPtRel", 30, 0, 300, "PT^{rel}_{#mu}");
     MSPlot["MuonEta"]                                       = new MultiSamplePlot(datasets, "MuonEta", 24, -2.4, 2.4, "#eta_{#mu}");
     MSPlot["MuonPhi"]                                       = new MultiSamplePlot(datasets, "MuonPhi", 35, -3.5, 3.5, "#phi_{#mu}");
     MSPlot["MuonNValidHits"]                                = new MultiSamplePlot(datasets, "MuonNValidHits", 30, 0, 30, "NValidHits_{#mu}");
@@ -355,26 +361,12 @@ int main (int argc, char *argv[])
     MSPlot["MuonRelNminusBPUCH"]                            = new MultiSamplePlot(datasets, "MuonRelNminusBPUCH", 50, -1, 1, "Relative N-#beta * PUCH");
     MSPlot["MuonBeta"]                                      = new MultiSamplePlot(datasets, "MuonBeta", 50, -1, 1, "#Delta#beta");
 
-    //Different dBeta RelIso Plots
-    MSPlot["MuonRelIso0"]                                   = new MultiSamplePlot(datasets, "MuonRelIso0", 50, 0, 1, "RelIso(#Delta#beta = 0.1)");
-    MSPlot["MuonRelIso1"]                                   = new MultiSamplePlot(datasets, "MuonRelIso1", 50, 0, 1, "RelIso(#Delta#beta = 0.1)");
-    MSPlot["MuonRelIso2"]                                   = new MultiSamplePlot(datasets, "MuonRelIso2", 50, 0, 1, "RelIso(#Delta#beta = 0.2)");
-    MSPlot["MuonRelIso3"]                                   = new MultiSamplePlot(datasets, "MuonRelIso3", 50, 0, 1, "RelIso(#Delta#beta = 0.3)");
-    MSPlot["MuonRelIso4"]                                   = new MultiSamplePlot(datasets, "MuonRelIso4", 50, 0, 1, "RelIso(#Delta#beta = 0.4)");
-    MSPlot["MuonRelIso5"]                                   = new MultiSamplePlot(datasets, "MuonRelIso5", 50, 0, 1, "RelIso(#Delta#beta = 0.5)");
-    MSPlot["MuonRelIso6"]                                   = new MultiSamplePlot(datasets, "MuonRelIso6", 50, 0, 1, "RelIso(#Delta#beta = 0.6)");
-    MSPlot["MuonRelIso7"]                                   = new MultiSamplePlot(datasets, "MuonRelIso7", 50, 0, 1, "RelIso(#Delta#beta = 0.7)");
-    MSPlot["MuonRelIso8"]                                   = new MultiSamplePlot(datasets, "MuonRelIso8", 50, 0, 1, "RelIso(#Delta#beta = 0.8)");
-    MSPlot["MuonRelIso9"]                                   = new MultiSamplePlot(datasets, "MuonRelIso9", 50, 0, 1, "RelIso(#Delta#beta = 0.9)");
-    MSPlot["MuonRelIso10"]                                  = new MultiSamplePlot(datasets, "MuonRelIso10", 50, 0, 1, "RelIso(#Delta#beta = 1.0)");
-
-
-
     //Electrons
     MSPlot["NbOfIsolatedElectrons"]                         = new MultiSamplePlot(datasets, "NbOfIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["NbOfExtraIsolatedElectrons"]                    = new MultiSamplePlot(datasets, "NbOfExtraIsolatedElectrons", 5, 0, 5, "Nb. of isolated electrons");
     MSPlot["ElectronRelIsolation"]                          = new MultiSamplePlot(datasets, "ElectronRelIsolation", 10, 0, .25, "RelIso");
     MSPlot["ElectronPt"]                                    = new MultiSamplePlot(datasets, "ElectronPt", 30, 0, 300, "PT_{e}");
+    MSPlot["LeadingElectronPt"]                             = new MultiSamplePlot(datasets, "LeadingElectronPt", 30, 0, 300, "PT_{e}");
     MSPlot["ElectronEta"]                                   = new MultiSamplePlot(datasets, "ElectronEta", 24, -2.4, 2.4, "#eta_{e}");
     MSPlot["ElectronPhi"]                                   = new MultiSamplePlot(datasets, "ElectronPhi", 35, -3.5, 3.5, "#phi_{e}");
     MSPlot["Electrond0"]                                    = new MultiSamplePlot(datasets, "Electrond0", 50, -0.05, 0.05, "d0_{e}");
@@ -389,11 +381,6 @@ int main (int argc, char *argv[])
     MSPlot["ElectronPtPreSel"]                              = new MultiSamplePlot(datasets, "ElectronPtPreSel", 30, 0, 300, "PT_{e}");
     MSPlot["ElectronEtaPreSel"]                             = new MultiSamplePlot(datasets, "ElectronEtaPreSel", 24, -2.4, 2.4, "#eta_{e}");
     MSPlot["ElectronRelIsolationPreSel"]                    = new MultiSamplePlot(datasets, "ElectronRelIsolationPreSel", 10, 0, .25, "RelIso");
-
-
-
-    //Plots Specific to MuEl channel
-    MSPlot["MuElPairCharge"]                                = new MultiSamplePlot(datasets, "MuElPairCharge", 5, -2.5, 2.5, "Total charge");
 
     //B-tagging discriminators
     MSPlot["BdiscBJetCand_CSV"]                             = new MultiSamplePlot(datasets, "BdiscBJetCand_CSV", 20, 0, 1, "CSV b-disc.");
@@ -423,6 +410,7 @@ int main (int argc, char *argv[])
     MSPlot["HExcess2M"]                                     = new MultiSamplePlot(datasets, "HExcess2M", 50, 0, 3000, "H");
     MSPlot["HTExcess1M2L"]                                  = new MultiSamplePlot(datasets, "HTExcess1M2L", 50, 0, 1000, "HT");
     MSPlot["HExcess1M2L"]                                   = new MultiSamplePlot(datasets, "HExcess1M2L", 50, 0, 3000, "H");
+    MSPlot["HTMinusCSVM"]                                   = new MultiSamplePlot(datasets, "HTMinusCSVM", 50, 0, 1000, "HT");
     MSPlot["SelectedJetPtPreSel"]                           = new MultiSamplePlot(datasets, "SelectedJetPtPreSel", 30, 0, 300, "PT_{jet}");
     MSPlot["JetEtaPreSel"]                                  = new MultiSamplePlot(datasets, "JetEtaPreSel", 40,-4, 4, "Jet #eta");
     MSPlot["JetEnergyRatio"]                                = new MultiSamplePlot(datasets, "JetEnergyRatio", 50,0, 10, "Charge/Neutral");
@@ -437,7 +425,12 @@ int main (int argc, char *argv[])
     MSPlot["LeptonTruth"]                                   = new MultiSamplePlot(datasets, "LeptonTruth", 6, -1, 5, "LeptonTruth");
     MSPlot["CSVLEfficiency"]                                = new MultiSamplePlot(datasets, "CSVLEfficiency", 2, 0, 2, "True B-Jet");
     MSPlot["CSVMEfficiency"]                                = new MultiSamplePlot(datasets, "CSVMEfficiency", 2, 0, 2, "True B-Jet");
+    MSPlot["CSVMType"]                                      = new MultiSamplePlot(datasets, "CSVMType", 30, 0, 30, "B-Tag Truth ID");
     MSPlot["CSVTEfficiency"]                                = new MultiSamplePlot(datasets, "CSVTEfficiency", 2, 0, 2, "True B-Jet");
+    MSPlot["LeadingTagType"]                                = new MultiSamplePlot(datasets, "LeadingTagType", 25, 0, 25, "Leading B-Tag Truth ID");
+    MSPlot["SecondTagType"]                                 = new MultiSamplePlot(datasets, "SecondTagType", 25, 0, 25, "Second B-Tag Truth ID");
+    MSPlot["ExtraTagType"]                                  = new MultiSamplePlot(datasets, "ExtraTagType", 25, 0, 25, "Extra B-Tag Truth ID");
+    MSPlot["ExtraBMotherType"]                              = new MultiSamplePlot(datasets, "ExtraBMotherType", 25, 0, 25, "B-Tag Mother Truth ID");
     MSPlot["TrueBJetPt"]                                    = new MultiSamplePlot(datasets, "TrueBJetPt", 30, 0, 300, "PT_{jet}");
     MSPlot["TrueBJetEta"]                                   = new MultiSamplePlot(datasets, "TrueBJetEta", 40, -4, 4, "#eta_{jet}");
     MSPlot["TrueBJetCSV"]                                   = new MultiSamplePlot(datasets, "TrueBJetCSV", 20, 0, 1, "CSV_{jet}");
@@ -532,7 +525,10 @@ int main (int argc, char *argv[])
             CutsselecTable.push_back(string("At least 4 Jets"));
             CutsselecTable.push_back(string("At least 1 CSVM Jet"));
             CutsselecTable.push_back(string("At least 2 CSVM Jets"));
-//            CutsselecTable.push_back(string("Same Sign Leading Leptons"));
+            CutsselecTable.push_back(string("HT $\\geq 100 GeV$"));
+            CutsselecTable.push_back(string("HT $\\geq 200 GeV$"));
+            CutsselecTable.push_back(string("HT $\\geq 300 GeV$"));
+            CutsselecTable.push_back(string("HT $\\geq 400 GeV$"));
         }
         if(!Muon && Electron)
         {
@@ -595,11 +591,18 @@ int main (int argc, char *argv[])
         treeLoader.LoadDataset (datasets[d], anaEnv);  //open files and load dataset
         string previousFilename = "";
         int iFile = -1;
+        bool nlo = false;
         dataSetName = datasets[d]->Name();
-        if(datasets[d]->Name()=="TTJetsPU20bx25") bx25 = true;
-        if(datasets[d]->Name()=="TTJetsPU40bx50") bx25 = false;
+        if(dataSetName.find("bx50") != std::string::npos) bx25 = false;
+        else bx25 = true;
+
+        if(dataSetName.find("NLO") != std::string::npos || dataSetName.find("nlo") !=std::string::npos) nlo = true;
+        else nlo = false;
+
         if(bx25) cout << "Dataset with 25ns Bunch Spacing!" <<endl;
         else cout << "Dataset with 50ns Bunch Spacing!" <<endl;
+        if(nlo) cout << "NLO Dataset!" <<endl;
+        else cout << "LO Dataset!" << endl;
 
         //////////////////////////////////////////////////
         // Initialize JEC factors ///////////////////////
@@ -638,9 +641,9 @@ int main (int argc, char *argv[])
         int itrigger = -1, previousRun = -1;
 
         int start = 0;
-        unsigned int end = datasets[d]->NofEvtsToRunOver();
+        unsigned int ending = datasets[d]->NofEvtsToRunOver();
 
-        cout <<"Number of events = "<<  end  <<endl;
+        cout <<"Number of events = "<<  ending  <<endl;
 
         int event_start = 0;
         if (verbose > 1) cout << " - Loop over events " << endl;
@@ -648,7 +651,7 @@ int main (int argc, char *argv[])
         double MHT, MHTSig, STJet, EventMass, EventMassX , SumJetMass, SumJetMassX,H,HX , HT, HTX,HTH,HTXHX, sumpx_X, sumpy_X, sumpz_X, sume_X, sumpx, sumpy, sumpz, sume, jetpt,PTBalTopEventX,PTBalTopSumJetX , PTBalTopMuMet;
 
         double currentfrac =0.;
-        double end_d = end;
+        double end_d = ending;
 
         cout <<"Will run over "<<  end_d<< " events..."<<endl;
         cout <<"Starting event = = = = "<< event_start  << endl;
@@ -679,14 +682,25 @@ int main (int argc, char *argv[])
 
             if(ievt%1000 == 0)
             {
-                std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(end-start)<<"%)"<<flush<<"\r"<<endl;
+                std::cout<<"Processing the "<<ievt<<"th event, time = "<< ((double)clock() - start) / CLOCKS_PER_SEC << " ("<<100*(ievt-start)/(ending-start)<<"%)"<<flush<<"\r"<<endl;
             }
 
             float scaleFactor = 1.;  // scale factor for the event
             event = treeLoader.LoadEvent (ievt, vertex, init_muons, init_electrons, init_jets, mets, debug);  //load event
             if (debug)cout <<"Number of Electrons Loaded: " << init_electrons.size() <<endl;
+            float weight_0 = event->weight0();
+            if (debug)cout <<"Weight0: " << weight_0 <<endl;
+            if(nlo)
+            {
+                if(weight_0 < 0.0)
+                {
+                    scaleFactor = -1.0;  //Taking into account negative weights in NLO Monte Carlo
+                    negWeights++;
+                }
+            }
 
             float rho = event->fixedGridRhoFastjetAll();
+            if (debug)cout <<"Rho: " << rho <<endl;
             string graphName;
 
             /////////////////////////
@@ -1072,10 +1086,10 @@ int main (int argc, char *argv[])
             bool pairFlag = false, looseIsoPairFlag = false;
 
             vector<TLorentzVector> selectedMuonsTLV_JC, selectedElectronsTLV_JC, selectedLooseIsoMuonsTLV;
-            vector<TLorentzVector> mcParticlesTLV, selectedJetsTLV, mcMuonsTLV;
+            vector<TLorentzVector> mcParticlesTLV, selectedJetsTLV, mcMuonsTLV, mcPartonsTLV;
             vector<TRootMCParticle*> mcParticlesMatching_;
-            vector<int> mcMuonIndex;
-            JetPartonMatching muonMatching;
+            vector<int> mcMuonIndex, mcPartonIndex;
+            JetPartonMatching muonMatching, jetMatching;
 
             for (Int_t selmu =0; selmu < selectedLooseIsoMuons.size(); selmu++ )
             {
@@ -1105,18 +1119,6 @@ int main (int argc, char *argv[])
                 MSPlot["MuonRelPUCHI4PreSel"]->Fill((PUCE/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonRelIsoPreSel"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonRelTotN4PreSel"]->Fill((NE/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso0"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.0), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso1"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.1), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso2"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.2), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso3"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.3), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso4"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.4), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso5"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.5), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso6"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.6), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso7"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.7), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso8"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.8), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso9"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 0.9), datasets[d], true, Luminosity*scaleFactor);
-                MSPlot["MuonRelIso10"]->Fill(selectedLooseIsoMuons[selmu]->relPfIso(4, 1.0), datasets[d], true, Luminosity*scaleFactor);
-
                 MSPlot["MuonRelNminusPUCH"]->Fill(((NE-PUCE)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonRelNminusBPUCH"]->Fill(((NE-0.5*PUCE)/selectedLooseIsoMuons[selmu]->Pt()), datasets[d], true, Luminosity*scaleFactor);
             }
@@ -1199,6 +1201,7 @@ int main (int argc, char *argv[])
             ////////////////////////////////////////////////////
             for ( seljet =0; seljet < selectedJets.size(); seljet++ )
             {
+                selectedJetsTLV.push_back(*selectedJets[seljet]);
                 if (selectedJets[seljet]->btag_combinedInclusiveSecondaryVertexV2BJetTags() > 0.244   )
                 {
                     selectedLBJets.push_back(selectedJets[seljet]);
@@ -1259,36 +1262,38 @@ int main (int argc, char *argv[])
             bool isGoodPV = selection.isPVSelected(vertex, 4, 24., 2);
             if (debug)	cout <<"PrimaryVertexBit: " << isGoodPV << " TriggerBit: " << trigged <<endl;
             if (debug) cin.get();
-            selecTable.Fill(d,0,1);
+            selecTable.Fill(d,0,scaleFactor);
+            weightCount += scaleFactor;
+            eventCount++;
             if(Muon && !Electron && dilepton)   //Di-Muon Selection Table
             {
                 if(isGoodPV && trigged)
                 {
-                    selecTable.Fill(d,1,1);
+                    selecTable.Fill(d,1,scaleFactor);
                     if (nLooseIsoMu>=2 && looseIsoPairFlag)
                     {
-                        selecTable.Fill(d,2,1);
+                        selecTable.Fill(d,2,scaleFactor);
                         if (nMu>=2 && pairFlag)
                         {
-                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,scaleFactor);
                             if(diMuMass>=20)
                             {
-                                selecTable.Fill(d,4,1);
+                                selecTable.Fill(d,4,scaleFactor);
                                 if(diMuMass>=106 || diMuMass<=76)
                                 {
-                                    selecTable.Fill(d,5,1);
+                                    selecTable.Fill(d,5,scaleFactor);
                                     if(nJets>=2)
                                     {
-                                        selecTable.Fill(d,6,1);
+                                        selecTable.Fill(d,6,scaleFactor);
                                         if(mets[0]->Et()>=40)
                                         {
-                                            selecTable.Fill(d,7,1);
+                                            selecTable.Fill(d,7,scaleFactor);
                                             if(nLtags>=1)
                                             {
-                                                selecTable.Fill(d,8,1);
+                                                selecTable.Fill(d,8,scaleFactor);
                                                 if(nLtags>=2)
                                                 {
-                                                    selecTable.Fill(d,9,1);
+                                                    selecTable.Fill(d,9,scaleFactor);
                                                 }
                                             }
                                         }
@@ -1303,22 +1308,38 @@ int main (int argc, char *argv[])
             {
                 if(isGoodPV && trigged)
                 {
-                    selecTable.Fill(d,1,1);
+                    selecTable.Fill(d,1,scaleFactor);
                     if (nMu>=1)
                     {
-                        selecTable.Fill(d,2,1);
+                        selecTable.Fill(d,2,scaleFactor);
                         if(nEl>=1)
                         {
-                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,scaleFactor);
                             if(nJets>=4)
                             {
-                                selecTable.Fill(d,4,1);
+                                selecTable.Fill(d,4,scaleFactor);
                                 if(nMtags>=1)
                                 {
-                                    selecTable.Fill(d,5,1);
+                                    selecTable.Fill(d,5,scaleFactor);
                                     if(nMtags>=2)
                                     {
-                                        selecTable.Fill(d,6,1);
+                                        selecTable.Fill(d,6,scaleFactor);
+                                        if(temp_HT>=100)
+                                        {
+                                            selecTable.Fill(d,7,scaleFactor);
+                                        }
+                                        if(temp_HT>=200)
+                                        {
+                                            selecTable.Fill(d,8,scaleFactor);
+                                        }
+                                        if(temp_HT>=300)
+                                        {
+                                            selecTable.Fill(d,9,scaleFactor);
+                                        }
+                                        if(temp_HT>=400)
+                                        {
+                                            selecTable.Fill(d,10,scaleFactor);
+                                        }
                                     }
                                 }
                             }
@@ -1330,22 +1351,22 @@ int main (int argc, char *argv[])
             {
                 if(isGoodPV && trigged)
                 {
-                    selecTable.Fill(d,1,1);
+                    selecTable.Fill(d,1,scaleFactor);
                     if (nEl==1)
                     {
-                        selecTable.Fill(d,2,1);
+                        selecTable.Fill(d,2,scaleFactor);
                         if(nMtags==2)
                         {
-                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,scaleFactor);
                             if(nJets>=2)
                             {
-                                selecTable.Fill(d,4,1);
+                                selecTable.Fill(d,4,scaleFactor);
                                 if(nJets>=3)
                                 {
-                                    selecTable.Fill(d,5,1);
+                                    selecTable.Fill(d,5,scaleFactor);
                                     if(nJets>=4)
                                     {
-                                        selecTable.Fill(d,6,1);
+                                        selecTable.Fill(d,6,scaleFactor);
                                     }
                                 }
                             }
@@ -1357,31 +1378,31 @@ int main (int argc, char *argv[])
             {
                 if(isGoodPV && trigged)
                 {
-                    selecTable.Fill(d,1,1);
+                    selecTable.Fill(d,1,scaleFactor);
                     if (nMu==1 )
                     {
-                        selecTable.Fill(d,2,1);
+                        selecTable.Fill(d,2,scaleFactor);
                         if (selectedExtraMuons.size() == 1)
                         {
-                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,scaleFactor);
                             if(nEl == 0)
                             {
-                                selecTable.Fill(d,4,1);
+                                selecTable.Fill(d,4,scaleFactor);
                                 if(nJets>=1)
                                 {
-                                    selecTable.Fill(d,5,1);
+                                    selecTable.Fill(d,5,scaleFactor);
                                     if(nJets>=2)
                                     {
-                                        selecTable.Fill(d,6,1);
+                                        selecTable.Fill(d,6,scaleFactor);
                                         if(nJets>=3)
                                         {
-                                            selecTable.Fill(d,7,1);
+                                            selecTable.Fill(d,7,scaleFactor);
                                             if(nJets>=4)
                                             {
-                                                selecTable.Fill(d,8,1);
+                                                selecTable.Fill(d,8,scaleFactor);
                                                 if(nMtags>=1)
                                                 {
-                                                    selecTable.Fill(d,9,1);
+                                                    selecTable.Fill(d,9,scaleFactor);
                                                 }
                                             }
                                         }
@@ -1396,31 +1417,31 @@ int main (int argc, char *argv[])
             {
                 if(isGoodPV && trigged)
                 {
-                    selecTable.Fill(d,1,1);
+                    selecTable.Fill(d,1,scaleFactor);
                     if (nEl==1 )
                     {
-                        selecTable.Fill(d,2,1);
+                        selecTable.Fill(d,2,scaleFactor);
                         if (selectedExtraElectrons.size() == 1)
                         {
-                            selecTable.Fill(d,3,1);
+                            selecTable.Fill(d,3,scaleFactor);
                             if(nMu == 0)
                             {
-                                selecTable.Fill(d,4,1);
+                                selecTable.Fill(d,4,scaleFactor);
                                 if(nJets>=1)
                                 {
-                                    selecTable.Fill(d,5,1);
+                                    selecTable.Fill(d,5,scaleFactor);
                                     if(nJets>=2)
                                     {
-                                        selecTable.Fill(d,6,1);
+                                        selecTable.Fill(d,6,scaleFactor);
                                         if(nJets>=3)
                                         {
-                                            selecTable.Fill(d,7,1);
+                                            selecTable.Fill(d,7,scaleFactor);
                                             if(nJets>=4)
                                             {
-                                                selecTable.Fill(d,8,1);
+                                                selecTable.Fill(d,8,scaleFactor);
                                                 if(nMtags>=1)
                                                 {
-                                                    selecTable.Fill(d,9,1);
+                                                    selecTable.Fill(d,9,scaleFactor);
                                                 }
                                             }
                                         }
@@ -1534,7 +1555,7 @@ int main (int argc, char *argv[])
             }
             sort(selectedJets.begin(),selectedJets.end(),HighestCVSBtag());
 
-            if(nMtags>=2)
+            if(nMtags>2)
             {
                 for (Int_t seljet1 =2; seljet1 < selectedJets.size(); seljet1++ )
                 {
@@ -1554,6 +1575,7 @@ int main (int argc, char *argv[])
             else if (dilepton && Muon && Electron)
             {
                 if (!(nJets>=4 && nMtags >=2 )) continue; //Jet Tag Event Selection Requirements for Mu-El dilepton channel
+//                if (!(temp_HT >= 400)) continue; //Jet Tag Event Selection Requirements for Mu-El dilepton channel
             }
             else
             {
@@ -1688,7 +1710,7 @@ int main (int argc, char *argv[])
                 pairCharge = selectedMuons[0]->charge() + selectedMuons[1]->charge();
                 MSPlot["MuonPairCharge"]->Fill(pairCharge, datasets[d], true, Luminosity*scaleFactor);
             }
-
+            int leadingMuIdx = 0, leadingMuPt = 0;
             for (Int_t selmu =0; selmu < selectedMuons.size(); selmu++ )
             {
                 float reliso = selectedMuons[selmu]->relPfIso(4, 0.5);
@@ -1699,6 +1721,11 @@ int main (int argc, char *argv[])
                 MSPlot["MuonDz"]->Fill(selectedMuons[selmu]->dz() , datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["MuonChi2"]->Fill(selectedMuons[selmu]->chi2() , datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["MuonPt"]->Fill(selectedMuons[selmu]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                if(selectedMuons[selmu]->Pt() > leadingMuPt)
+                {
+                    leadingMuIdx = selmu;
+                    leadingMuPt = selectedMuons[selmu]->Pt();
+                }
                 MSPlot["MuonPtRel"]->Fill(MuonPTRel[selmu], datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonEta"]->Fill(selectedMuons[selmu]->Eta(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["MuonPhi"]->Fill(selectedMuons[selmu]->Phi(), datasets[d], true, Luminosity*scaleFactor);
@@ -1714,18 +1741,28 @@ int main (int argc, char *argv[])
 //                if(selectedMuons[selmu]->chargedHadronIso(4) == 0) cout << "Zero Muon CHIso. nHadIso: " << selectedMuons[selmu]->neutralHadronIso(4) << " phoIso: " << selectedMuons[selmu]->photonIso(4) << " PuChHadIso: " << selectedMuons[selmu]->puChargedHadronIso(4) << " pfRelIso: " << reliso << endl;
 
             }
+            MSPlot["LeadingMuonPt"]->Fill(selectedMuons[leadingMuIdx]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["LeadingMuonPtRel"]->Fill(MuonPTRel[leadingMuIdx], datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["LeadingMuonDRMin"]->Fill(MuondRMin[leadingMuIdx], datasets[d], true, Luminosity*scaleFactor);
+
+            for(unsigned int i=0; i<mcParticlesMatching_.size(); i++)
+            {
+                if( abs(mcParticlesMatching_[i]->type()) == 13)   //Final State Muon
+                {
+                    mcMuonsTLV.push_back(*mcParticlesMatching_[i]);
+                    mcMuonIndex.push_back(i);
+                }
+                if( abs(mcParticlesMatching_[i]->type()) <= 6)   //Final State parton
+                {
+                    mcPartonsTLV.push_back(*mcParticlesMatching_[i]);
+                    mcPartonIndex.push_back(i);
+                }
+            }
 
             if(Muon && !Electron)
             {
                 //Truth matching in Di-Muon channel
-                for(unsigned int i=0; i<mcParticlesMatching_.size(); i++)
-                {
-                    if( abs(mcParticlesMatching_[i]->type()) == 13 && mcParticlesMatching_[i]->status() == 1)   //Final State Muon
-                    {
-                        mcMuonsTLV.push_back(*mcParticlesMatching_[i]);
-                        mcMuonIndex.push_back(i);
-                    }
-                }
+
                 muonMatching = JetPartonMatching(selectedMuonsTLV_JC, mcMuonsTLV, 2, true, true, 0.3);
 
                 MSPlot["NbOfGenMuons"]->Fill(mcMuonsTLV.size(), datasets[d], true, Luminosity*scaleFactor);
@@ -1817,6 +1854,7 @@ int main (int argc, char *argv[])
             //////////////////////////
 
             MSPlot["NbOfIsolatedElectrons"]->Fill(selectedElectrons.size(), datasets[d], true, Luminosity*scaleFactor);
+            int leadingElIdx = 0, leadingElPt = 0;
             for (Int_t selel =0; selel < selectedElectrons.size(); selel++ )
             {
                 float reliso = selectedElectrons[selel]->relPfIso(3, 0.5);
@@ -1824,6 +1862,11 @@ int main (int argc, char *argv[])
                 selectedElectronsTLV_JC.push_back(*selectedElectrons[selel]);
                 MSPlot["Electrondz"]->Fill(selectedElectrons[selel]->dz() , datasets[d], true, Luminosity*scaleFactor );
                 MSPlot["ElectronPt"]->Fill(selectedElectrons[selel]->Pt(), datasets[d], true, Luminosity*scaleFactor);
+                if(selectedElectrons[selel]->Pt() > leadingElPt)
+                {
+                    leadingElIdx = selel;
+                    leadingElPt = selectedElectrons[selel]->Pt();
+                }
                 MSPlot["ElectronEta"]->Fill(selectedElectrons[selel]->Eta(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["ElectronPhi"]->Fill(selectedElectrons[selel]->Phi(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["Electrond0"]->Fill(selectedElectrons[selel]->d0(), datasets[d], true, Luminosity*scaleFactor);
@@ -1832,6 +1875,7 @@ int main (int argc, char *argv[])
                 MSPlot["ElectronTrackChi2"]->Fill(selectedElectrons[selel]->trackNormalizedChi2(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["ElectronGSFChi2"]->Fill(selectedElectrons[selel]->gsfTrackNormalizedChi2(), datasets[d], true, Luminosity*scaleFactor);
             }
+            MSPlot["LeadingElectronPt"]->Fill(leadingElPt, datasets[d], true, Luminosity*scaleFactor);
             if(nEl>=2 && !Muon && Electron)
             {
                 float pairCharge = selectedElectrons[0]->charge() + selectedElectrons[1]->charge();
@@ -1845,11 +1889,6 @@ int main (int argc, char *argv[])
             // Plots for MuEl Channel //
             ////////////////////////////
 
-            if(nEl>=1 && nMu>=1 && Muon && Electron)
-            {
-                float pairCharge = selectedMuons[0]->charge() + selectedElectrons[0]->charge();
-                MSPlot["MuElPairCharge"]->Fill(pairCharge, datasets[d], true, Luminosity*scaleFactor);
-            }
 
             //////////////////////
             // Jets Based Plots //
@@ -1871,17 +1910,34 @@ int main (int argc, char *argv[])
 
             HT = 0;
             H = 0;
-            double HT1M2L=0, H1M2L=0;
+            double HT1M2L=0, H1M2L=0, HTbjets=0;
 
             for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ )
             {
                 MSPlot["BdiscBJetCand_CSV"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags(),datasets[d], true, Luminosity*scaleFactor);
+                if(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags() >= 0.679 )
+                {
+                    HTbjets+=selectedJets[seljet1]->Pt();
+                    vector<TLorentzVector> jetTLV;
+                    jetTLV.push_back(*selectedJets[seljet1]);
+                    jetMatching = JetPartonMatching(jetTLV, mcPartonsTLV, 2, true, true, 0.3);
+                    int matchedPartonNumber = jetMatching.getMatchForParton(0, 0); //Gives the index of mcPartonsTLV where the match is
+                    if(seljet1  == 0) MSPlot["LeadingTagType"]->Fill(abs(selectedJets[seljet1]->partonFlavour()), datasets[d], true, Luminosity*scaleFactor);
+                    if(seljet1  == 1) MSPlot["SecondTagType"]->Fill(abs(selectedJets[seljet1]->partonFlavour()), datasets[d], true, Luminosity*scaleFactor);
+                    if(seljet1  >= 2)
+                    {
+                        MSPlot["ExtraTagType"]->Fill(abs(selectedJets[seljet1]->partonFlavour()), datasets[d], true, Luminosity*scaleFactor);
+                        if(abs(selectedJets[seljet1]->partonFlavour()) == 5 && matchedPartonNumber >= 0)
+                        {
+                            int jetMotherType = mcParticlesMatching_[mcPartonIndex[matchedPartonNumber]]->motherType();
+                            MSPlot["ExtraBMotherType"]->Fill(abs(jetMotherType), datasets[d], true, Luminosity*scaleFactor);
+                        }
+                    }
+
+                }
                 MSPlot["SelectedJetPt"]->Fill(selectedJets[seljet1]->Pt(), datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["JetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
                 MSPlot["JetPhi"]->Fill(selectedJets[seljet1]->Phi() , datasets[d], true, Luminosity*scaleFactor);
-//                MSPlot["JetCHEF"]->Fill(selectedJets[seljet1]->chargedHadronEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
-//                MSPlot["JetNHEF"]->Fill(selectedJets[seljet1]->neutralHadronEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
-//                MSPlot["JetNEEF"]->Fill(selectedJets[seljet1]->neutralEmEnergyFraction() , datasets[d], true, Luminosity*scaleFactor);
                 if(abs(selectedJets[seljet1]->partonFlavour()) == 5)
                 {
                     MSPlot["TrueBJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
@@ -1921,27 +1977,6 @@ int main (int argc, char *argv[])
                         MSPlot["CSVMTrueLJetEta"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
                     }
                 }
-                if(vertex.size()<= 15)
-                {
-                    MSPlot["BdiscBJetCand_CSV_LowPU"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags(),datasets[d], true, Luminosity*scaleFactor);
-                    if(abs(selectedJets[seljet1]->partonFlavour()) == 5)
-                    {
-                        MSPlot["TrueBJetEtaLowPU"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
-                        MSPlot["TrueBJetPtLowPU"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
-                        MSPlot["TrueBJetCSVLowPU"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags() , datasets[d], true, Luminosity*scaleFactor);
-                    }
-                }
-                if(vertex.size()>= 25)
-                {
-                    MSPlot["BdiscBJetCand_CSV_HighPU"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags(),datasets[d], true, Luminosity*scaleFactor);
-                    if(abs(selectedJets[seljet1]->partonFlavour()) == 5)
-                    {
-                        MSPlot["TrueBJetEtaHighPU"]->Fill(selectedJets[seljet1]->Eta() , datasets[d], true, Luminosity*scaleFactor);
-                        MSPlot["TrueBJetPtHighPU"]->Fill(selectedJets[seljet1]->Pt() , datasets[d], true, Luminosity*scaleFactor);
-                        MSPlot["TrueBJetCSVHighPU"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags() , datasets[d], true, Luminosity*scaleFactor);
-                    }
-                }
-
                 //Event-level variables
                 jetpt = selectedJets[seljet1]->Pt();
                 HT = HT + jetpt;
@@ -1958,6 +1993,8 @@ int main (int argc, char *argv[])
             }
             MSPlot["HTExcess1M2L"]->Fill(HT1M2L, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["HExcess1M2L"]->Fill(H1M2L, datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["HTMinusCSVM"]->Fill((HT-HTbjets), datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["HTb_SelectedJets"]->Fill(HTbjets, datasets[d], true, Luminosity*scaleFactor);
             HTH = HT/H;
             MSPlot["H"]->Fill(H, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["HTH"]->Fill(HTH, datasets[d], true, Luminosity*scaleFactor);
@@ -1967,6 +2004,9 @@ int main (int argc, char *argv[])
 
         } //End Loop on Events
         cout <<"n events passed  =  "<<passed <<endl;
+        cout <<"n events with negative weights = "<<negWeights << endl;
+        cout << "Event Count: " << eventCount << endl;
+        cout << "Weight Count: " << weightCount << endl;
         //important: free memory
         treeLoader.UnLoadDataset();
     } //End Loop on Datasets
@@ -1987,7 +2027,7 @@ int main (int argc, char *argv[])
     selecTable.TableCalculator(  true, true, true, true, true);
 
     //Options : WithError (false), writeMerged (true), useBookTabs (false), addRawsyNumbers (false), addEfficiencies (false), addTotalEfficiencies (false), writeLandscape (false)
-    selecTable.Write(  "FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,false);
+    selecTable.Write(  "FourTop"+postfix+"_Table"+channelpostfix+".tex",    false,true,true,true,false,false,true);
 
     fout->cd();
     TFile *foutmva = new TFile ("foutMVA.root","RECREATE");
