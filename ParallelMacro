@@ -1,0 +1,4 @@
+#! /bin/bash
+
+./MACRO ttttNLO SM_NLO_tttt 40 1 2 1 4925535.5 .008823 0.0 dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/CRAB_PrivateMC/FOURTOP_NLO_13TeV_aMCatNLO_LHE_pythia8_miniAOD_CRAB3_v3/141201_105227/0000/TOPTREE_*.root &
+./MACRO ttttLO SM_LO_tttt 40 1 2 1 11117287.3 .008995 0.0 dcap://maite.iihe.ac.be/pnfs/iihe/cms/store/user/heilman/TopTrees/72x/FOURTOP_LO_TOPTREE.root &
