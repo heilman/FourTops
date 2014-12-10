@@ -113,7 +113,7 @@ int main (int argc, char *argv[])
 {
 
     //Checking Passed Arguments to ensure proper execution of MACRO
-    if(argc != 11)
+    if(argc != 12)
     {
         std::cerr << "INVALID INPUT FROM XMLFILE.  CHECK XML IMPUT FROM SCRIPT.  " << argc << " ARGUMENTS HAVE BEEN PASSED." << std::endl;
         return 1;
@@ -123,34 +123,31 @@ int main (int argc, char *argv[])
 
     const string dName              = argv[1];
     const string dTitle             = argv[2];
-    const int color                 = strtol(argv[3], NULL, 10);
-    const int ls                    = strtol(argv[4], NULL, 10);
-    const int lw                    = strtol(argv[5], NULL, 10);
-    const float normf               = strtod(argv[6], NULL);
-    const float EqLumi              = strtod(argv[7], NULL);
-    const float xSect               = strtod(argv[8], NULL);
-    const float PreselEff           = strtod(argv[9], NULL);
-    string fileName;
+    const int color                 = strtol(argv[4], NULL, 10);
+    const int ls                    = strtol(argv[5], NULL, 10);
+    const int lw                    = strtol(argv[6], NULL, 10);
+    const float normf               = strtod(argv[7], NULL);
+    const float EqLumi              = strtod(argv[8], NULL);
+    const float xSect               = strtod(argv[9], NULL);
+    const float PreselEff           = strtod(argv[10], NULL);
+    string fileName                 = argv[11];
     vector<string> vecfileNames;
-    for(int i=10; i<argc; i++)
-    {
-        fileName = argv[i];
-        vecfileNames.push_back(fileName);
-    }
+    vecfileNames.push_back(fileName);
 
 
 
-        cout << "---Dataset accepted from command line---" << endl;
-        cout << "Dataset Name: " << dName << endl;
-        cout << "Dataset Title: " << dTitle << endl;
-        cout << "Dataset color: " << color << endl;
-        cout << "Dataset ls: " << ls << endl;
-        cout << "Dataset lw: " << lw << endl;
-        cout << "Dataset normf: " << normf << endl;
-        cout << "Dataset EqLumi: " << EqLumi << endl;
-        cout << "Dataset xSect: " << xSect << endl;
-        cout << "Dataset File Name: " << vecfileNames[0] << endl;
-        cout << "----------------------------------------" << endl;
+    cout << "---Dataset accepted from command line---" << endl;
+    cout << "Dataset Name: " << dName << endl;
+    cout << "Dataset Title: " << dTitle << endl;
+    cout << "Dataset color: " << color << endl;
+    cout << "Dataset ls: " << ls << endl;
+    cout << "Dataset lw: " << lw << endl;
+    cout << "Dataset normf: " << normf << endl;
+    cout << "Dataset EqLumi: " << EqLumi << endl;
+    cout << "Dataset xSect: " << xSect << endl;
+    cout << "Dataset File Name: " << vecfileNames[0] << endl;
+    cout << "----------------------------------------" << endl;
+//    cin.get();
 
 
 
@@ -246,8 +243,25 @@ int main (int argc, char *argv[])
     /////////////////////////////
 
     AnalysisEnvironment anaEnv;
-    cout<<" - Loading environment ..."<<endl;
-    AnalysisEnvironmentLoader anaLoad(anaEnv,xmlfile);
+    cout<<" - Creating environment ..."<<endl;
+//    AnalysisEnvironmentLoader anaLoad(anaEnv,xmlfile);
+    anaEnv.PrimaryVertexCollection = "PrimaryVertex";
+    anaEnv.JetCollection = "PFJets_slimmedJets";
+    anaEnv.METCollection = "PFMET_slimmedMETs";
+    anaEnv.MuonCollection = "Muons_slimmedMuons";
+    anaEnv.ElectronCollection = "Electrons_slimmedElectrons";
+    anaEnv.GenJetCollection   = "GenJets_slimmedGenJets";
+    anaEnv.TrackMETCollection = "";
+    anaEnv.GenEventCollection = "GenEvent";
+    anaEnv.NPGenEventCollection = "NPGenEvent";
+    anaEnv.MCParticlesCollection = "MCParticles";
+    anaEnv.loadGenJetCollection = false;
+    anaEnv.loadGenEventCollection = false;
+    anaEnv.loadNPGenEventCollection = false;
+    anaEnv.loadMCParticles = true;
+    anaEnv.loadTrackMETCollection = false;
+    anaEnv.JetType = 2;
+    anaEnv.METType = 2;
     int verbose = 2;//anaEnv.Verbose;
 
     LumiReWeighting LumiWeights;
