@@ -23,6 +23,7 @@
 #include <fstream>
 #include <sstream>
 #include <sys/stat.h>
+#include <errno.h>
 #include "TRandom3.h"
 #include "TRandom.h"
 #include "TProfile.h"
@@ -657,6 +658,76 @@ int main (int argc, char *argv[])
         else cout << "Dataset with 50ns Bunch Spacing!" <<endl;
         if(nlo) cout << "NLO Dataset!" <<endl;
         else cout << "LO Dataset!" << endl;
+
+
+        //////////////////////////////////////////////
+        // Setup Date string and nTuple for output  //
+        //////////////////////////////////////////////
+
+        time_t t = time(0);   // get time now
+        struct tm * now = localtime( & t );
+
+        int year = now->tm_year + 1900;
+        int month =  now->tm_mon + 1;
+        int day = now->tm_mday;
+        int hour = now->tm_hour;
+        int min = now->tm_min;
+        int sec = now->tm_sec;
+
+        string year_str;
+        string month_str;
+        string day_str;
+        string hour_str;
+        string min_str;
+        string sec_str;
+
+        ostringstream convert;   // stream used for the conversion
+        convert << year;      // insert the textual representation of 'Number' in the characters in the stream
+        year_str = convert.str();
+        convert.str("");
+        convert.clear();
+        convert << month;      // insert the textual representation of 'Number' in the characters in the stream
+        month_str = convert.str();
+        convert.str("");
+        convert.clear();
+        convert << day;      // insert the textual representation of 'Number' in the characters in the stream
+        day_str = convert.str();
+        convert.str("");
+        convert.clear();
+        convert << hour;      // insert the textual representation of 'Number' in the characters in the stream
+        hour_str = convert.str();
+        convert.str("");
+        convert.clear();
+        convert << min;      // insert the textual representation of 'Number' in the characters in the stream
+        min_str = convert.str();
+        convert.str("");
+        convert.clear();
+        convert << day;      // insert the textual representation of 'Number' in the characters in the stream
+        sec_str = convert.str();
+        convert.str("");
+        convert.clear();
+
+
+        string date_str = day_str + "_" + month_str + "_" + year_str;
+
+        cout <<"DATE STRING   "<<date_str << endl;
+
+        string dataSetName = datasets[d]->Name();
+        string channel_dir = "Craneens"+channelpostfix;
+        string date_dir = channel_dir+"/Craneens" + date_str +"/";
+        int mkdirstatus = mkdir(channel_dir.c_str(),0777);
+        mkdirstatus = mkdir(date_dir.c_str(),0777);
+
+
+
+        //     string Ntupname = "Craneens/Craneen_" + dataSetName +postfix + "_" + date_str+  ".root";
+
+        string Ntupname = "Craneens"+channelpostfix+"/Craneens"+ date_str  +"/Craneen_" + dataSetName +postfix + ".root";
+        string Ntuptitle = "Craneen_" + dataSetName;
+
+        TFile * tupfile = new TFile(Ntupname.c_str(),"RECREATE");
+
+        TNtuple * tup = new TNtuple(Ntuptitle.c_str(),Ntuptitle.c_str(),"nJets:nMtags:HT:HTb:HTH:HT2M:H2M:3rdJetPt:4thJetPt:5thJetPt:6thJetPt:ScaleFactor:NormFactor:Luminosity");
 
         //////////////////////////////////////////////////
         // Initialize JEC factors ///////////////////////
@@ -1944,16 +2015,16 @@ int main (int argc, char *argv[])
 
             HT = 0;
             H = 0;
-            double HT1M2L=0, H1M2L=0, HTbjets=0;
+            double HT1M2L=0, H1M2L=0, HTbjets=0, HT2M=0, H2M=0;
 
 
             for (Int_t seljet1 =0; seljet1 < selectedJets.size(); seljet1++ )
             {
-                if(nMtags>2 && seljet1>=2)
+                if(nMtags>=2 && seljet1>=2)
                 {
                     jetpt = selectedJets[seljet1]->Pt();
-                    HT = HT + jetpt;
-                    H = H + selectedJets[seljet1]->P();
+                    HT2M = HT2M + jetpt;
+                    H2M = H2M + selectedJets[seljet1]->P();
                 }
                 MSPlot["BdiscBJetCand_CSV"]->Fill(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags(),datasets[d], true, Luminosity*scaleFactor);
                 if(selectedJets[seljet1]->btag_combinedInclusiveSecondaryVertexV2BJetTags() >= 0.679 )
@@ -2032,8 +2103,8 @@ int main (int argc, char *argv[])
                     H1M2L += selectedJets[seljet1]->P();
                 }
             }
-            MSPlot["HTExcess2M"]->Fill(HT, datasets[d], true, Luminosity*scaleFactor);
-            MSPlot["HExcess2M"]->Fill(H, datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["HTExcess2M"]->Fill(HT2M, datasets[d], true, Luminosity*scaleFactor);
+            MSPlot["HExcess2M"]->Fill(H2M, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["HTExcess1M2L"]->Fill(HT1M2L, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["HExcess1M2L"]->Fill(H1M2L, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["HTMinusCSVM"]->Fill((HT-HTbjets), datasets[d], true, Luminosity*scaleFactor);
@@ -2045,7 +2116,13 @@ int main (int argc, char *argv[])
             MSPlot["HTRat"]->Fill(HTRat, datasets[d], true, Luminosity*scaleFactor);
             MSPlot["MET"]->Fill(mets[0]->Et(), datasets[d], true, Luminosity*scaleFactor);
 
+            sort(selectedJets.begin(),selectedJets.end(),HighestPt()); //order Jets wrt Pt for tuple output
+            tup->Fill(nJets,nMtags,HT,HTb,HTH,HT2M,H2M,selectedJets[2]->Pt(),selectedJets[3]->Pt(),selectedJets[4]->Pt(),selectedJets[5]->Pt(),scaleFactor,datasets[d]->NormFactor(),Luminosity);
+
         } //End Loop on Events
+
+        tup->Write();
+        tupfile->Close();
         cout <<"n events passed  =  "<<passed <<endl;
         cout <<"n events with negative weights = "<<negWeights << endl;
         cout << "Event Count: " << eventCount << endl;
