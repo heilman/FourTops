@@ -1,0 +1,8 @@
+Basic Recipe for running Analysis:
+
+-Compile TopTreeProducer and TopTreeAnalysisBase
+-run './CompileMacro' in the FourTops directory.  This compiles TopTree_EventSelection_Run2.cc and creates the MACRO executable.
+-run 'python LaunchParallelMacro.py'  This reads from config/Run2_samples.xml, parses the entries there and then launches a different instance of the macro over each dataset on each core available on the machine.
+
+
+

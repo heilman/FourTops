@@ -248,6 +248,8 @@ int main (int argc, char *argv[])
     float Luminosity = 5000.0; //pb^-1??
     vector<string> MVAvars;
 
+        string dataSetName;
+
 
     /////////////////////////////////
     //  Loop over Datasets
@@ -505,7 +507,7 @@ int main (int argc, char *argv[])
 
             // Apply trigger selection
 //            trigged = treeLoader.EventTrigged (itrigger);
-            trigged = true;  // Disabling the HLT requirement
+            bool trigged = true;  // Disabling the HLT requirement
             if (debug)cout<<"triggered? Y/N?  "<< trigged  <<endl;
             if(!trigged)		   continue;  //If an HLT condition is not present, skip this event in the loop.
             // Declare selection instance
